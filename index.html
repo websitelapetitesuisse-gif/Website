@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Petite Suisse</title>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');</style>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: oklch(0.11 0.01 55);
+      --bg2: oklch(0.14 0.01 55);
+      --cream: oklch(0.93 0.02 82);
+      --cream-muted: oklch(0.70 0.02 75);
+      --gold: oklch(0.72 0.10 75);
+      --gold-light: oklch(0.82 0.08 78);
+      --border: oklch(0.25 0.02 60);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 48px;
+      transition: background 0.4s, padding 0.4s;
+    }
+    nav.scrolled {
+      background: rgba(17, 13, 10, 0.92);
+      backdrop-filter: blur(12px);
+      padding: 14px 48px;
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo img {
+      height: 40px;
+      mix-blend-mode: screen;
+    }
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cream-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--cream); }
+    .nav-cta {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--gold);
+      border: none;
+      padding: 10px 24px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--gold-light); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: brightness(0.45);
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 40%, var(--bg) 100%);
+    }
+    .hero-content {
+      position: relative;
+      text-align: center;
+      max-width: 800px;
+      padding: 0 24px;
+    }
+    .hero-eyebrow {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(56px, 8vw, 110px);
+      font-weight: 300;
+      line-height: 0.95;
+      color: var(--cream);
+      margin-bottom: 28px;
+    }
+    .hero-title em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--gold-light);
+    }
+    .hero-sub {
+      font-size: 16px;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      color: var(--cream-muted);
+      margin-bottom: 48px;
+      line-height: 1.6;
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      background: var(--gold);
+      color: var(--bg);
+      border: none;
+      padding: 16px 36px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: var(--gold-light); }
+    .btn-outline {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      background: transparent;
+      color: var(--cream);
+      border: 1px solid var(--border);
+      padding: 16px 36px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--cream-muted); }
+    .hero-scroll {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .hero-scroll span {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--cream-muted);
+    }
+    .scroll-line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.1); }
+    }
+
+    /* ── SECTION SHARED ── */
+    section { padding: 100px 0; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+    .section-label {
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 4vw, 60px);
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--cream);
+    }
+    .section-title em { font-style: italic; color: var(--gold-light); }
+    .divider {
+      width: 48px;
+      height: 1px;
+      background: var(--gold);
+      margin: 28px 0;
+    }
+
+    /* ── ABOUT ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .about-text p {
+      font-size: 16px;
+      line-height: 1.85;
+      color: var(--cream-muted);
+      margin-bottom: 20px;
+      font-weight: 300;
+      text-wrap: pretty;
+    }
+    .about-text p:first-of-type {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--cream);
+      line-height: 1.6;
+    }
+    .about-image-stack {
+      position: relative;
+      height: 560px;
+    }
+    .about-image-stack img {
+      position: absolute;
+      object-fit: cover;
+    }
+    .about-img-main {
+      width: 80%;
+      height: 100%;
+      right: 0;
+      top: 0;
+    }
+    .about-img-accent {
+      width: 52%;
+      height: 55%;
+      left: 0;
+      bottom: -40px;
+      border: 4px solid var(--bg);
+    }
+    .about-stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 36px;
+      padding-top: 36px;
+      border-top: 1px solid var(--border);
+    }
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 44px;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cream-muted);
+      margin-top: 4px;
+    }
+
+    /* ── GALLERY ── */
+    .gallery-section { background: var(--bg2); }
+    .gallery-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 48px;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: 280px 280px;
+      gap: 12px;
+    }
+    .gallery-item {
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+    }
+    .gallery-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .gallery-item:hover img { transform: scale(1.05); }
+    .gallery-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      transition: background 0.3s;
+    }
+    .gallery-item:hover::after { background: rgba(0,0,0,0.15); }
+    .gi-1 { grid-column: 1 / 5; grid-row: 1; }
+    .gi-2 { grid-column: 5 / 8; grid-row: 1; }
+    .gi-3 { grid-column: 8 / 13; grid-row: 1 / 3; }
+    .gi-4 { grid-column: 1 / 4; grid-row: 2; }
+    .gi-5 { grid-column: 4 / 8; grid-row: 2; }
+    .gi-6 { grid-column: 8 / 13; display: none; }
+
+    /* ── MENU TEASER ── */
+    .menu-section { overflow: hidden; }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 56px;
+    }
+    .menu-card {
+      background: var(--bg);
+      padding: 48px 40px;
+      transition: background 0.3s;
+    }
+    .menu-card:hover { background: var(--bg2); }
+    .menu-card-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px;
+      font-weight: 300;
+      color: oklch(0.38 0.03 60);
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+    .menu-card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--cream);
+      margin-bottom: 12px;
+    }
+    .menu-card-desc {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--cream-muted);
+      font-weight: 300;
+      text-wrap: pretty;
+    }
+    .menu-card-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-style: italic;
+      color: var(--gold);
+      margin-top: 24px;
+    }
+
+    /* ── RESERVATION ── */
+    .reservation-section {
+      position: relative;
+      overflow: hidden;
+      padding: 120px 0;
+    }
+    .reservation-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: brightness(0.2);
+    }
+    .reservation-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(17,13,10,0.7) 0%, rgba(17,13,10,0.4) 100%);
+    }
+    .reservation-content {
+      position: relative;
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+    .reservation-content .section-title { font-size: clamp(44px, 5vw, 72px); }
+    .reservation-content p {
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--cream-muted);
+      margin: 24px 0 40px;
+    }
+    .reservation-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-field.full { grid-column: 1 / -1; }
+    .form-field label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--cream-muted);
+    }
+    .form-field input,
+    .form-field select {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      padding: 12px 16px;
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .form-field input:focus,
+    .form-field select:focus { border-color: var(--gold); }
+    .form-field input::placeholder { color: oklch(0.45 0.01 75); }
+    .form-field select option { background: #1a1510; color: var(--cream); }
+
+    /* ── HOURS ── */
+    .info-section { background: var(--bg2); }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: 1px solid var(--border);
+    }
+    .info-block {
+      padding: 56px 48px;
+      border-right: 1px solid var(--border);
+    }
+    .info-block:last-child { border-right: none; }
+    .info-block-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 400;
+      color: var(--cream);
+      margin-bottom: 24px;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: var(--cream-muted);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-row span:last-child { color: var(--cream); }
+    .info-text {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--cream-muted);
+    }
+    .info-text strong { color: var(--cream); font-weight: 400; display: block; margin-bottom: 4px; }
+    .info-text a { color: var(--gold); text-decoration: none; }
+    .info-text a:hover { text-decoration: underline; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 48px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    footer img { height: 32px; opacity: 0.6; mix-blend-mode: screen; }
+    .footer-copy {
+      font-size: 12px;
+      color: oklch(0.40 0.01 75);
+      letter-spacing: 0.05em;
+    }
+    .footer-social {
+      display: flex;
+      gap: 20px;
+    }
+    .footer-social a {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: oklch(0.45 0.01 75);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-social a:hover { color: var(--cream-muted); }
+
+    /* ── FADE IN ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .lightbox.open { opacity: 1; pointer-events: all; }
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      object-fit: contain;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 24px; right: 32px;
+      font-size: 28px;
+      color: var(--cream-muted);
+      cursor: pointer;
+      background: none;
+      border: none;
+      transition: color 0.2s;
+    }
+    .lightbox-close:hover { color: var(--cream); }
+
+    /* ── TWEAKS PANEL ── */
+    #tweaks-panel {
+      display: none;
+      position: fixed;
+      bottom: 24px; right: 24px;
+      background: oklch(0.16 0.01 55);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      z-index: 200;
+      width: 240px;
+    }
+    #tweaks-panel h4 {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .tweak-row { margin-bottom: 14px; }
+    .tweak-row label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--cream-muted);
+      margin-bottom: 6px;
+    }
+    .tweak-row input[type="color"] {
+      width: 100%;
+      height: 32px;
+      border: 1px solid var(--border);
+      background: none;
+      cursor: pointer;
+      padding: 2px;
+    }
+    .tweak-row input[type="range"] {
+      width: 100%;
+      accent-color: var(--gold);
+    }
+    .tweak-row select {
+      width: 100%;
+      background: oklch(0.20 0.01 55);
+      border: 1px solid var(--border);
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      padding: 6px 8px;
+      appearance: none;
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 20px 24px; }
+      nav.scrolled { padding: 12px 24px; }
+      .nav-links { display: none; }
+      .container { padding: 0 24px; }
+      section { padding: 72px 0; }
+      .about-grid { grid-template-columns: 1fr; gap: 48px; }
+      .about-image-stack { height: 380px; }
+      .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; gap: 8px; }
+      .gi-1, .gi-2, .gi-3, .gi-4, .gi-5 { grid-column: auto; grid-row: auto; height: 240px; }
+      .gi-3 { grid-column: span 2; }
+      .menu-grid { grid-template-columns: 1fr; }
+      .info-grid { grid-template-columns: 1fr; }
+      .info-block { border-right: none; border-bottom: 1px solid var(--border); }
+      .info-block:last-child { border-bottom: none; }
+      .reservation-form { grid-template-columns: 1fr; }
+      .form-field.full { grid-column: 1; }
+      footer { flex-direction: column; gap: 20px; text-align: center; }
+      .about-stats { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="main-nav">
+    <a class="nav-logo" href="#top">
+      <img src="uploads/logo.png" alt="La Petite Suisse" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#menu">Signatures</a></li>
+      <li><a href="#info">Hours</a></li>
+    </ul>
+    <a class="nav-cta" href="https://www.thefork.be/nl/restaurant/la-petite-suisse-r847783" target="_blank" rel="noopener">Reserve</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="uploads/ambiance.mp4" type="video/mp4" />
+    </video>
+    <!-- Fallback if video fails -->
+    <img src="uploads/hero-salle.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(0.4);z-index:-1;" id="hero-fallback" />
+    <div class="hero-overlay"></div>
+    <div class="hero-content fade-up visible">
+      <p class="hero-eyebrow">Restaurant · Bar · Cocktails</p>
+      <h1 class="hero-title">La<br><em>Petite</em><br>Suisse</h1>
+      <p class="hero-sub">An atmosphere that invites you to linger.</p>
+      <div class="hero-buttons">
+        <a class="btn-primary" href="https://www.thefork.be/nl/restaurant/la-petite-suisse-r847783" target="_blank" rel="noopener">Reserve a Table</a>
+        <a class="btn-outline" href="menu.html">Explore the Menu</a>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text fade-up">
+          <p class="section-label">Our story</p>
+          <h2 class="section-title">A place<br><em>like no other</em></h2>
+          <div class="divider"></div>
+          <p>In the heart of the city, La Petite Suisse was born from a simple idea: create a place where you eat really well, drink with care, and keep coming back.</p>
+          <p>Our cooking draws from the great tables without conforming to them. Market produce, live fire, house-made sauces — every plate has something to say.</p>
+          <p>In the dining room and at the bar, our team is here for you, and for making time pass gently.</p>
+
+        </div>
+        <div class="about-image-stack fade-up">
+          <img class="about-img-main" src="uploads/gallery-06.jpg" alt="Ambiance La Petite Suisse" />
+          <img class="about-img-accent" src="uploads/gallery-05.jpg" alt="Cocktail bar" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="gallery-section" id="gallery">
+    <div class="container">
+      <div class="gallery-header fade-up">
+        <div>
+          <p class="section-label">Gallery</p>
+          <h2 class="section-title">The table &<br><em>the plate</em></h2>
+        </div>
+        <p style="font-size:14px;color:var(--cream-muted);max-width:280px;text-align:right;line-height:1.6;">A selection of moments and dishes that define the spirit of La Petite Suisse.</p>
+      </div>
+      <div class="gallery-grid fade-up">
+        <div class="gallery-item gi-1" data-img="uploads/gallery-01.jpg">
+          <img src="uploads/gallery-01.jpg" alt="Croquettes de fromage" />
+        </div>
+        <div class="gallery-item gi-2" data-img="uploads/gallery-02.jpg">
+          <img src="uploads/gallery-02.jpg" alt="Œuf benedictine" />
+        </div>
+        <div class="gallery-item gi-3" data-img="uploads/gallery-04.jpg">
+          <img src="uploads/gallery-04.jpg" alt="Grill au feu vif" />
+        </div>
+        <div class="gallery-item gi-4" data-img="uploads/gallery-03.jpg">
+          <img src="uploads/gallery-03.jpg" alt="Noix de Saint-Jacques" />
+        </div>
+        <div class="gallery-item gi-5" data-img="uploads/gallery-05.jpg">
+          <img src="uploads/gallery-05.jpg" alt="Cocktail signature" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MENU TEASER -->
+  <section id="menu">
+    <div class="container">
+      <div class="fade-up" style="text-align:center;max-width:560px;margin:0 auto 0;">
+        <p class="section-label">Our menu</p>
+        <h2 class="section-title">House<br><em>signatures</em></h2>
+        <div class="divider" style="margin:28px auto;"></div>
+      </div>
+      <div class="menu-grid fade-up">
+        <div class="menu-card">
+          <div class="menu-card-num">01</div>
+          <div class="menu-card-title">House Croquettes</div>
+          <p class="menu-card-desc">Melting cheese, golden crust, truffle dipping sauce — our signature since day one. Non-negotiable.</p>
+          <div class="menu-card-price">14 €</div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-card-num">02</div>
+          <div class="menu-card-title">Scallops, bisque</div>
+          <p class="menu-card-desc">Pan-seared in brown butter, shellfish bisque, crisp vegetables and coral oil.</p>
+          <div class="menu-card-price">32 €</div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-card-num">03</div>
+          <div class="menu-card-title">Butcher's cut</div>
+          <p class="menu-card-desc">Live-fire grilled, 45-day dry-aged, served with house fries and béarnaise. For those who know.</p>
+          <div class="menu-card-price">38 €</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:40px;" class="fade-up">
+        <a class="btn-outline" href="menu.html" style="display:inline-block;">View Full Menu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESERVATION -->
+  <section class="reservation-section" id="reservation">
+    <img class="reservation-bg" src="uploads/heritage.jpg" alt="" />
+    <div class="reservation-overlay"></div>
+    <div class="reservation-content fade-up">
+      <p class="section-label">Reservations</p>
+      <h2 class="section-title">Book<br><em>your table</em></h2>
+      <p>A special occasion or simply a great evening — we'll be waiting for you.</p>
+      <a class="btn-primary" href="https://www.thefork.be/nl/restaurant/la-petite-suisse-r847783" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;">Reserve on TheFork</a>
+    </div>
+  </section>
+
+  <!-- INFO -->
+  <section class="info-section" id="info">
+    <div class="container">
+      <div class="info-grid fade-up">
+        <div class="info-block">
+          <h3 class="info-block-title">Hours</h3>
+          <div class="info-row"><span>Monday – Saturday</span><span>11:30–14:30 &nbsp;·&nbsp; 18:00–22:30</span></div>
+          <div class="info-row"><span>Sunday</span><span>Closed</span></div>
+        </div>
+        <div class="info-block">
+          <h3 class="info-block-title">Address &amp; Contact</h3>
+          <p class="info-text">
+            <strong>La Petite Suisse</strong>
+            Klein-Zwitserlandplein 2<br />1050 Elsene, Belgium<br /><br />
+            <strong>Phone</strong>
+            <a href="tel:+32472843931">+32 472 84 39 31</a><br /><br />
+            <strong>Email</strong>
+            <a href="mailto:info.lapetitesuisse@gmail.com">info.lapetitesuisse@gmail.com</a>
+          </p>
+        </div>
+        <div class="info-block">
+          <h3 class="info-block-title">Follow Us</h3>
+          <p class="info-text" style="margin-bottom:24px;">Daily specials, events and behind-the-scenes on our socials.</p>
+          <p class="info-text">
+            <a href="https://www.instagram.com/la_petite_suisse_ixelles/" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;margin-bottom:14px;text-decoration:none;color:var(--gold);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+              @la_petite_suisse_ixelles
+            </a>
+            <a href="https://www.facebook.com/people/Brasserie-la-petite-Suisse/100071886680920/" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--gold);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+              La Petite Suisse
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <img src="uploads/logo.png" alt="La Petite Suisse" />
+    <span class="footer-copy">© 2026 La Petite Suisse. All rights reserved.</span>
+    <div class="footer-social">
+      <a href="https://www.instagram.com/la_petite_suisse_ixelles/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.facebook.com/people/Brasserie-la-petite-Suisse/100071886680920/" target="_blank" rel="noopener">Facebook</a>
+      <a href="https://www.thefork.be/nl/restaurant/la-petite-suisse-r847783" target="_blank" rel="noopener">Reserve</a>
+    </div>
+  </footer>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <img id="lightbox-img" src="" alt="" />
+  </div>
+
+  <!-- TWEAKS PANEL -->
+  <div id="tweaks-panel">
+    <h4>Tweaks</h4>
+    <div class="tweak-row">
+      <label>Accent colour</label>
+      <input type="color" id="tweak-gold" value="#c9a96e" oninput="applyGold(this.value)" />
+    </div>
+    <div class="tweak-row">
+      <label>Video brightness</label>
+      <input type="range" id="tweak-brightness" min="10" max="70" value="45" oninput="applyBrightness(this.value)" />
+    </div>
+    <div class="tweak-row">
+      <label>Background tone</label>
+      <select onchange="applyBg(this.value)">
+        <option value="dark">Dark (default)</option>
+        <option value="warm">Deep warm</option>
+        <option value="slate">Slate</option>
+      </select>
+    </div>
+  </div>
+
+  <script>
+    // Nav scroll
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // Hide hero fallback when video loads
+    const video = document.querySelector('.hero-video');
+    if (video) {
+      video.addEventListener('canplay', () => {
+        document.getElementById('hero-fallback').style.display = 'none';
+      });
+    }
+
+    // Fade up on scroll
+    const fadeEls = document.querySelectorAll('.fade-up');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    fadeEls.forEach(el => { if (!el.classList.contains('visible')) observer.observe(el); });
+
+    // Lightbox
+    document.querySelectorAll('.gallery-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const img = item.querySelector('img').src;
+        document.getElementById('lightbox-img').src = img;
+        document.getElementById('lightbox').classList.add('open');
+      });
+    });
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+    // Reservation form
+    function handleReservation(e) {
+      e.preventDefault();
+      document.getElementById('form-confirm').style.display = 'block';
+      e.target.style.display = 'none';
+    }
+
+    // Tweaks
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "gold": "#c9a96e",
+      "brightness": 52,
+      "bg": "dark"
+    }/*EDITMODE-END*/;
+
+    function applyGold(val) {
+      document.documentElement.style.setProperty('--gold', val);
+      document.documentElement.style.setProperty('--gold-light', val);
+    }
+    function applyBrightness(val) {
+      const v = document.querySelector('.hero-video');
+      if (v) v.style.filter = `brightness(${val/100})`;
+    }
+    function applyBg(val) {
+      const bgs = { dark: 'oklch(0.11 0.01 55)', warm: 'oklch(0.10 0.02 40)', slate: 'oklch(0.11 0.005 240)' };
+      document.documentElement.style.setProperty('--bg', bgs[val] || bgs.dark);
+    }
+
+    // Apply saved tweaks
+    applyGold(TWEAK_DEFAULTS.gold);
+    applyBrightness(TWEAK_DEFAULTS.brightness);
+    applyBg(TWEAK_DEFAULTS.bg);
+    document.getElementById('tweak-gold').value = TWEAK_DEFAULTS.gold;
+    document.getElementById('tweak-brightness').value = TWEAK_DEFAULTS.brightness;
+
+  </script>
+</body>
+</html>

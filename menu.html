@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Carte — La Petite Suisse</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: oklch(0.11 0.01 55); --bg2: oklch(0.14 0.01 55);
+      --cream: oklch(0.93 0.02 82); --cream-muted: oklch(0.68 0.02 75);
+      --gold: oklch(0.72 0.10 75); --gold-light: oklch(0.82 0.08 78);
+      --border: oklch(0.22 0.02 60); --red: oklch(0.60 0.15 25);
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--cream); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; }
+
+    .top-bar { position: sticky; top: 0; z-index: 100; background: rgba(17,13,10,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 16px 48px; }
+    .back-link { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cream-muted); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+    .back-link:hover { color: var(--cream); }
+    .back-link::before { content: '←'; font-size: 14px; }
+    .top-bar-logo img { height: 34px; mix-blend-mode: screen; }
+    .reserve-btn { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; background: var(--gold); color: var(--bg); border: none; padding: 9px 20px; text-decoration: none; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: background 0.2s; }
+    .reserve-btn:hover { background: var(--gold-light); }
+
+    .menu-hero { text-align: center; padding: 72px 24px 48px; border-bottom: 1px solid var(--border); }
+    .menu-hero-label { font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
+    .menu-hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(48px, 6vw, 80px); font-weight: 300; line-height: 1; color: var(--cream); }
+    .menu-hero h1 em { font-style: italic; color: var(--gold-light); }
+
+    .cat-nav { position: sticky; top: 69px; z-index: 90; background: var(--bg2); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    .cat-nav::-webkit-scrollbar { display: none; }
+    .cat-nav-inner { display: flex; gap: 0; width: max-content; padding: 0 48px; }
+    .cat-tab { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cream-muted); padding: 16px 22px; text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.2s, border-color 0.2s; cursor: pointer; }
+    .cat-tab:hover { color: var(--cream); }
+    .cat-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+    .menu-content { max-width: 860px; margin: 0 auto; padding: 0 48px 100px; }
+    .menu-section { padding-top: 72px; }
+    .section-header { margin-bottom: 36px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .section-label-small { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+    .section-heading { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: var(--cream); line-height: 1; }
+    .section-note { font-size: 13px; color: var(--cream-muted); margin-top: 12px; line-height: 1.6; font-style: italic; }
+
+    .item { display: grid; grid-template-columns: 1fr auto; gap: 16px 24px; padding: 20px 0; border-bottom: 1px solid oklch(0.18 0.01 55); align-items: start; }
+    .item:last-child { border-bottom: none; }
+    .item-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: var(--cream); line-height: 1.2; grid-column: 1; grid-row: 1; }
+    .item-name .badge { font-family: 'DM Sans', sans-serif; font-size: 10px; font-style: normal; font-weight: 400; letter-spacing: 0.05em; color: var(--cream-muted); border: 1px solid var(--border); padding: 2px 7px; margin-left: 8px; vertical-align: middle; position: relative; top: -1px; }
+    .item-price { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-style: italic; color: var(--gold); grid-column: 2; grid-row: 1; white-space: nowrap; text-align: right; }
+    .item-desc { font-size: 13px; color: var(--cream-muted); line-height: 1.6; grid-column: 1 / -1; grid-row: 2; margin-top: -4px; font-weight: 300; }
+
+    .sides-group { margin-top: 28px; }
+    .sides-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red); margin-bottom: 12px; font-weight: 400; }
+    .side-row { display: flex; justify-content: space-between; align-items: baseline; padding: 9px 0; border-bottom: 1px solid oklch(0.17 0.01 55); gap: 16px; }
+    .side-row:last-child { border-bottom: none; }
+    .side-name { font-size: 14px; color: var(--cream-muted); font-weight: 300; }
+    .side-price { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-style: italic; color: var(--gold); white-space: nowrap; }
+
+    .burger-note { background: oklch(0.14 0.015 55); border: 1px solid var(--border); border-left: 3px solid var(--gold); padding: 16px 20px; margin-bottom: 32px; font-size: 13px; line-height: 1.7; color: var(--cream-muted); }
+
+    .kids-box { border: 1px solid var(--border); padding: 32px 36px; }
+    .kids-price { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: var(--gold); margin: 4px 0 20px; }
+    .kids-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 16px; }
+    .kids-col-title { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cream-muted); margin-bottom: 10px; }
+    .kids-list { list-style: none; }
+    .kids-list li { font-size: 14px; color: var(--cream-muted); padding: 5px 0; padding-left: 14px; position: relative; border-bottom: 1px solid oklch(0.17 0.01 55); }
+    .kids-list li::before { content: '—'; position: absolute; left: 0; color: var(--border); }
+
+    .loading-items { padding: 32px 0; color: var(--cream-muted); font-size: 13px; text-align: center; letter-spacing: 0.05em; }
+    .loading-shimmer { height: 64px; background: linear-gradient(90deg, var(--bg2) 25%, oklch(0.17 0.01 55) 50%, var(--bg2) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; margin-bottom: 1px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    .menu-footer { text-align: center; padding: 48px 24px; border-top: 1px solid var(--border); color: var(--cream-muted); font-size: 13px; line-height: 1.7; }
+    .menu-footer a { color: var(--gold); text-decoration: none; }
+
+    @media (max-width: 640px) {
+      .top-bar { padding: 14px 20px; }
+      .cat-nav-inner { padding: 0 20px; }
+      .menu-content { padding: 0 20px 80px; }
+      .kids-cols { grid-template-columns: 1fr; }
+      .reserve-btn { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <a class="back-link" href="index.html">Back</a>
+    <div class="top-bar-logo"><img src="uploads/logo.png" alt="La Petite Suisse" /></div>
+    <a class="reserve-btn" href="https://www.thefork.be/nl/restaurant/la-petite-suisse-r847783" target="_blank" rel="noopener">Reserve</a>
+  </header>
+
+  <div class="menu-hero">
+    <p class="menu-hero-label">La Carte</p>
+    <h1>Notre <em>menu</em></h1>
+  </div>
+
+  <nav class="cat-nav">
+    <div class="cat-nav-inner">
+      <a class="cat-tab active" href="#partager">À Partager</a>
+      <a class="cat-tab" href="#froides">Entrées Froides</a>
+      <a class="cat-tab" href="#chaudes">Entrées Chaudes</a>
+      <a class="cat-tab" href="#salades">Salades</a>
+      <a class="cat-tab" href="#plats">Plats</a>
+      <a class="cat-tab" href="#pates">Pâtes</a>
+      <a class="cat-tab" href="#viande">Viandes</a>
+      <a class="cat-tab" href="#burgers">Burgers</a>
+      <a class="cat-tab" href="#kids">Kids</a>
+      <a class="cat-tab" href="#desserts">Desserts</a>
+    </div>
+  </nav>
+
+  <main class="menu-content">
+
+    <section class="menu-section" id="partager">
+      <div class="section-header">
+        <p class="section-label-small">Pour commencer</p>
+        <h2 class="section-heading">À Partager</h2>
+      </div>
+      <div id="items-partager"></div>
+    </section>
+
+    <section class="menu-section" id="froides">
+      <div class="section-header">
+        <p class="section-label-small">Entrées</p>
+        <h2 class="section-heading">Entrées Froides</h2>
+      </div>
+      <div id="items-froides"></div>
+    </section>
+
+    <section class="menu-section" id="chaudes">
+      <div class="section-header">
+        <p class="section-label-small">Entrées</p>
+        <h2 class="section-heading">Entrées Chaudes</h2>
+      </div>
+      <div id="items-chaudes"></div>
+    </section>
+
+    <section class="menu-section" id="salades">
+      <div class="section-header">
+        <p class="section-label-small">Légèreté</p>
+        <h2 class="section-heading">Salades</h2>
+      </div>
+      <div id="items-salades"></div>
+    </section>
+
+    <section class="menu-section" id="plats">
+      <div class="section-header">
+        <p class="section-label-small">Cuisine du marché</p>
+        <h2 class="section-heading">Plats</h2>
+      </div>
+      <div id="items-plats"></div>
+    </section>
+
+    <section class="menu-section" id="pates">
+      <div class="section-header">
+        <p class="section-label-small">Pasta</p>
+        <h2 class="section-heading">Nos Pâtes</h2>
+      </div>
+      <div id="items-pates"></div>
+    </section>
+
+    <section class="menu-section" id="viande">
+      <div class="section-header">
+        <p class="section-label-small">Feu vif</p>
+        <h2 class="section-heading">Nos Pièces de Viande</h2>
+        <p class="section-note">Cuisson au choix : Bleu chaud · Saignant · À point · Bien cuit<br>Servies avec salade et sauce au choix : poivre vert, béarnaise, champignons, rochefort et choron piquante</p>
+      </div>
+      <div id="items-viande"></div>
+      <div class="sides-group">
+        <p class="sides-label">Accompagnements payants</p>
+        <div id="items-viande_sides"></div>
+      </div>
+      <div class="sides-group">
+        <p class="sides-label">Extra</p>
+        <div id="items-viande_extra"></div>
+      </div>
+    </section>
+
+    <section class="menu-section" id="burgers">
+      <div class="section-header">
+        <p class="section-label-small">Entre les deux</p>
+        <h2 class="section-heading">Burgers</h2>
+      </div>
+      <div class="burger-note">
+        Tous les burgers sont servis avec frites incluses — ou frites de patate douce (+1,50 €).<br>
+        Personnalisation possible : retrait d'ingrédients ou ajout d'extras : steak de bœuf, tenders de poulet, filet de poisson pané, piment, sauce, bacon, cheddar, Tomme de Savoie.<br><br>
+        <em>Tous nos burgers sont disponibles en version végétarienne.</em>
+      </div>
+      <div id="items-burgers"></div>
+    </section>
+
+    <section class="menu-section" id="kids">
+      <div class="section-header">
+        <p class="section-label-small">Pour les petits</p>
+        <h2 class="section-heading">Menu Kids</h2>
+      </div>
+      <div id="items-kids"></div>
+    </section>
+
+    <section class="menu-section" id="desserts">
+      <div class="section-header">
+        <p class="section-label-small">Pour finir</p>
+        <h2 class="section-heading">Desserts</h2>
+      </div>
+      <div id="items-desserts"></div>
+    </section>
+
+  </main>
+
+  <footer class="menu-footer">
+    <p>Les prix sont en euros, toutes taxes comprises.<br>
+    <a href="index.html">← Retour au site</a> &nbsp;·&nbsp;
+    <a href="https://www.thefork.be/nl/restaurant/la-petite-suisse-r847783" target="_blank">Réserver une table</a></p>
+  </footer>
+
+  <script>
+    // ── Supabase config ──
+    const SB_URL = 'https://tjvmsdsdmtyicuzioedn.supabase.co';
+    const SB_KEY = 'sb_publishable_4XDdA7LlmEhI8d9-Wlc3iA_79xZFZb7';
+
+    // ── Helpers ──
+    function esc(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function fmtPrice(p) {
+      if (p == null) return '';
+      return Number(p).toFixed(2).replace('.', ',') + ' €';
+    }
+
+    // ── Show shimmer loaders ──
+    const STANDARD_SECTIONS = ['partager','froides','chaudes','salades','plats','pates','viande','burgers','desserts'];
+    const SIDE_SECTIONS = ['viande_sides','viande_extra'];
+    const ALL_SECTIONS = [...STANDARD_SECTIONS, ...SIDE_SECTIONS, 'kids'];
+
+    ALL_SECTIONS.forEach(id => {
+      const el = document.getElementById('items-' + id);
+      if (el && !SIDE_SECTIONS.includes(id)) {
+        el.innerHTML = [1,2,3].map(() => '<div class="loading-shimmer"></div>').join('');
+      }
+    });
+
+    // ── Renderers ──
+    function renderStandardItem(item) {
+      return `
+        <div class="item">
+          <div class="item-name">${esc(item.name)}${item.badge ? `<span class="badge">${esc(item.badge)}</span>` : ''}</div>
+          <div class="item-price">${fmtPrice(item.price)}</div>
+          ${item.description ? `<div class="item-desc">${esc(item.description)}</div>` : ''}
+        </div>`;
+    }
+
+    function renderSideRow(item) {
+      return `
+        <div class="side-row">
+          <span class="side-name">${esc(item.name)}</span>
+          <span class="side-price">${fmtPrice(item.price)}</span>
+        </div>`;
+    }
+
+    function renderKids(item) {
+      if (!item) return '';
+      // Parse description: "Plat au choix : A · B — Dessert au choix : C · D — + 1 soft"
+      const parts = (item.description || '').split(' — ');
+      const platPart  = parts.find(p => p.toLowerCase().includes('plat')) || '';
+      const dessertPart = parts.find(p => p.toLowerCase().includes('dessert')) || '';
+      const platItems    = platPart.includes(':')    ? platPart.split(':')[1].trim().split(' · ') : [];
+      const dessertItems = dessertPart.includes(':') ? dessertPart.split(':')[1].trim().split(' · ') : [];
+
+      return `
+        <div class="kids-box">
+          <p style="font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:var(--cream-muted);">${esc(item.badge) || 'Plat + Dessert + 1 soft'}</p>
+          <div class="kids-price">${fmtPrice(item.price)}</div>
+          <div class="kids-cols">
+            <div>
+              <p class="kids-col-title">Plats au choix</p>
+              <ul class="kids-list">${platItems.map(i => `<li>${esc(i.trim())}</li>`).join('')}</ul>
+            </div>
+            <div>
+              <p class="kids-col-title">Desserts au choix</p>
+              <ul class="kids-list">${dessertItems.map(i => `<li>${esc(i.trim())}</li>`).join('')}</ul>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    // ── Fetch & render ──
+    async function loadMenu() {
+      try {
+        const res = await fetch(
+          `${SB_URL}/rest/v1/menu_items?status=eq.published&visible=eq.true&order=position.asc`,
+          { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } }
+        );
+        if (!res.ok) throw new Error('Failed to load menu');
+        const items = await res.json();
+
+        // Group by section
+        const bySection = {};
+        items.forEach(item => {
+          if (!bySection[item.section]) bySection[item.section] = [];
+          bySection[item.section].push(item);
+        });
+
+        // Render standard sections
+        STANDARD_SECTIONS.forEach(id => {
+          const el = document.getElementById('items-' + id);
+          if (!el) return;
+          const sectionItems = bySection[id] || [];
+          el.innerHTML = sectionItems.length
+            ? sectionItems.map(renderStandardItem).join('')
+            : '<p style="color:var(--cream-muted);font-size:13px;padding:20px 0;">Revenez bientôt.</p>';
+        });
+
+        // Render sides
+        SIDE_SECTIONS.forEach(id => {
+          const el = document.getElementById('items-' + id);
+          if (!el) return;
+          const sectionItems = bySection[id] || [];
+          el.innerHTML = sectionItems.map(renderSideRow).join('');
+        });
+
+        // Render kids
+        const kidsEl = document.getElementById('items-kids');
+        if (kidsEl) {
+          const kidsItems = bySection['kids'] || [];
+          kidsEl.innerHTML = kidsItems.length ? renderKids(kidsItems[0]) : '';
+        }
+
+      } catch (err) {
+        console.error(err);
+        // Fallback: show a gentle error
+        ALL_SECTIONS.forEach(id => {
+          const el = document.getElementById('items-' + id);
+          if (el && el.querySelector('.loading-shimmer')) {
+            el.innerHTML = '';
+          }
+        });
+      }
+    }
+
+    loadMenu();
+
+    // ── Active tab on scroll ──
+    const sections = document.querySelectorAll('.menu-section');
+    const tabs = document.querySelectorAll('.cat-tab');
+    const tabObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          tabs.forEach(t => t.classList.remove('active'));
+          const active = document.querySelector(`.cat-tab[href="#${entry.target.id}"]`);
+          if (active) {
+            active.classList.add('active');
+            active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          }
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    sections.forEach(s => tabObserver.observe(s));
+  </script>
+</body>
+</html>

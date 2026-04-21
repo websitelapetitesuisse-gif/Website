@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — La Petite Suisse</title>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');</style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0e0b08; --bg2: #141009; --bg3: #1c1610;
+      --cream: #f0e8da; --muted: #8a7d6a; --border: #2a2218;
+      --gold: #c9a96e; --green: #4caf74; --red: #c0392b; --yellow: #d4a017;
+    }
+    html, body { height: 100%; }
+    body { background: var(--bg); color: var(--cream); font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 14px; }
+
+    /* LOGIN */
+    .login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+    .login-card { width: 100%; max-width: 400px; border: 1px solid var(--border); padding: 48px 40px; }
+    .login-logo { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: var(--cream); margin-bottom: 8px; }
+    .login-sub { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 36px; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .field input { width: 100%; background: var(--bg3); border: 1px solid var(--border); color: var(--cream); font-family: 'DM Sans', sans-serif; font-size: 14px; padding: 10px 14px; outline: none; transition: border-color 0.2s; }
+    .field input:focus { border-color: var(--gold); }
+    .btn { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; border: none; transition: background 0.2s, opacity 0.2s; }
+    .btn-gold { background: var(--gold); color: var(--bg); padding: 12px 24px; }
+    .btn-gold:hover { background: #dbb87e; }
+    .btn-gold:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-outline { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 8px 16px; }
+    .btn-outline:hover { color: var(--cream); border-color: var(--muted); }
+    .btn-danger { background: transparent; color: var(--red); border: 1px solid var(--red); padding: 6px 12px; font-size: 11px; }
+    .btn-danger:hover { background: var(--red); color: #fff; }
+    .btn-sm { padding: 6px 12px; font-size: 11px; }
+    .err { font-size: 13px; color: var(--red); margin-top: 12px; }
+
+    /* LAYOUT */
+    .app { display: grid; grid-template-rows: 56px 1fr; grid-template-columns: 220px 1fr; height: 100vh; overflow: hidden; }
+
+    /* TOPBAR */
+    .topbar { grid-column: 1 / -1; background: var(--bg2); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; gap: 16px; }
+    .topbar-logo { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; color: var(--cream); }
+    .topbar-logo em { font-style: italic; color: var(--gold); }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .pending-badge { background: var(--yellow); color: var(--bg); font-size: 11px; font-weight: 500; letter-spacing: 0.05em; padding: 6px 14px; cursor: pointer; transition: background 0.2s; }
+    .pending-badge:hover { background: #e0b020; }
+    .pending-badge.none { background: var(--bg3); color: var(--muted); cursor: default; }
+    .logout-btn { font-size: 11px; color: var(--muted); text-decoration: none; cursor: pointer; letter-spacing: 0.1em; background: none; border: none; font-family: 'DM Sans', sans-serif; }
+    .logout-btn:hover { color: var(--cream); }
+
+    /* SIDEBAR */
+    .sidebar { background: var(--bg2); border-right: 1px solid var(--border); overflow-y: auto; }
+    .sidebar-section { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); padding: 20px 20px 8px; }
+    .sidebar-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; cursor: pointer; transition: background 0.15s; border-left: 2px solid transparent; }
+    .sidebar-item:hover { background: var(--bg3); }
+    .sidebar-item.active { background: var(--bg3); border-left-color: var(--gold); color: var(--cream); }
+    .sidebar-item-label { font-size: 13px; color: var(--muted); }
+    .sidebar-item.active .sidebar-item-label { color: var(--cream); }
+    .sidebar-count { font-size: 11px; color: var(--border); background: var(--bg3); padding: 2px 7px; border-radius: 10px; }
+    .sidebar-item.active .sidebar-count { color: var(--muted); }
+
+    /* MAIN */
+    .main { overflow-y: auto; padding: 32px; }
+    .main-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+    .main-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; }
+    .main-title em { font-style: italic; color: var(--gold); }
+
+    /* ITEMS */
+    .item-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+    .item-row { background: var(--bg2); display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 16px 20px; align-items: start; transition: background 0.15s; }
+    .item-row:hover { background: var(--bg3); }
+    .item-row.pending-update { border-left: 3px solid var(--yellow); }
+    .item-row.pending-create { border-left: 3px solid var(--green); }
+    .item-row.pending-delete { border-left: 3px solid var(--red); opacity: 0.5; }
+    .item-row.hidden { opacity: 0.4; }
+    .item-name { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 400; color: var(--cream); }
+    .item-badge { font-size: 10px; font-family: 'DM Sans', sans-serif; color: var(--muted); border: 1px solid var(--border); padding: 1px 6px; margin-left: 8px; vertical-align: middle; }
+    .item-desc { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+    .item-price { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-style: italic; color: var(--gold); margin-top: 2px; }
+    .item-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .pending-tag { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 6px; }
+    .pending-tag.create { background: var(--green); color: #fff; }
+    .pending-tag.update { background: var(--yellow); color: var(--bg); }
+    .pending-tag.delete { background: var(--red); color: #fff; }
+    .item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .icon-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 13px; padding: 5px 8px; cursor: pointer; transition: all 0.15s; }
+    .icon-btn:hover { border-color: var(--muted); color: var(--cream); }
+    .icon-btn.active { border-color: var(--green); color: var(--green); }
+    .icon-btn.del:hover { border-color: var(--red); color: var(--red); }
+    .icon-btn.undo:hover { border-color: var(--yellow); color: var(--yellow); }
+    .empty-state { text-align: center; padding: 60px 24px; color: var(--muted); }
+    .empty-state p { margin-bottom: 16px; font-size: 15px; }
+
+    /* MODAL */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 24px; }
+    .modal { background: var(--bg2); border: 1px solid var(--border); width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--border); }
+    .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; }
+    .modal-close { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; padding: 4px; }
+    .modal-close:hover { color: var(--cream); }
+    .modal-body { padding: 24px; }
+    .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    textarea.field-input { width: 100%; background: var(--bg3); border: 1px solid var(--border); color: var(--cream); font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 10px 14px; outline: none; resize: vertical; min-height: 80px; transition: border-color 0.2s; }
+    textarea.field-input:focus { border-color: var(--gold); }
+    .toggle-row { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
+    .toggle { position: relative; width: 36px; height: 20px; cursor: pointer; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; inset: 0; background: var(--border); transition: 0.2s; border-radius: 20px; }
+    .toggle input:checked + .toggle-slider { background: var(--green); }
+    .toggle-slider::before { content: ''; position: absolute; height: 14px; width: 14px; left: 3px; top: 3px; background: white; transition: 0.2s; border-radius: 50%; }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(16px); }
+    .toggle-label { font-size: 13px; color: var(--muted); }
+
+    /* PUBLISH MODAL */
+    .pub-section { margin-bottom: 20px; }
+    .pub-section-title { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 10px; }
+    .pub-section-title.creates { color: var(--green); }
+    .pub-section-title.updates { color: var(--yellow); }
+    .pub-section-title.deletes { color: var(--red); }
+    .pub-item { padding: 10px 14px; background: var(--bg3); margin-bottom: 4px; font-size: 13px; }
+    .pub-item-name { color: var(--cream); }
+    .pub-item-section { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .pub-empty { text-align: center; padding: 32px; color: var(--muted); font-size: 14px; }
+    .success-bar { background: var(--green); color: #fff; text-align: center; padding: 12px; font-size: 13px; letter-spacing: 0.05em; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect } = React;
+const { createClient } = supabase;
+
+const sb = createClient(
+  'https://tjvmsdsdmtyicuzioedn.supabase.co',
+  'sb_publishable_4XDdA7LlmEhI8d9-Wlc3iA_79xZFZb7'
+);
+
+const PENDING_KEY = 'lps_admin_pending';
+
+const SECTIONS = [
+  { id: 'partager',     label: 'À Partager' },
+  { id: 'froides',     label: 'Entrées Froides' },
+  { id: 'chaudes',     label: 'Entrées Chaudes' },
+  { id: 'salades',     label: 'Salades' },
+  { id: 'plats',       label: 'Plats' },
+  { id: 'pates',       label: 'Nos Pâtes' },
+  { id: 'viande',      label: 'Viandes' },
+  { id: 'viande_sides',label: 'Accompagnements' },
+  { id: 'viande_extra',label: 'Extras Viande' },
+  { id: 'burgers',     label: 'Burgers' },
+  { id: 'kids',        label: 'Menu Kids' },
+  { id: 'desserts',    label: 'Desserts' },
+];
+
+const sectionLabel = id => SECTIONS.find(s => s.id === id)?.label || id;
+
+// Pending helpers
+const loadPending = () => JSON.parse(localStorage.getItem(PENDING_KEY) || 'null') || { creates: [], updates: {}, deletes: [] };
+const savePending = p => localStorage.setItem(PENDING_KEY, JSON.stringify(p));
+const pendingCount = p => p.creates.length + Object.keys(p.updates).length + p.deletes.length;
+
+function mergeItems(dbItems, pending) {
+  const visible = dbItems
+    .filter(i => !pending.deletes.includes(i.id))
+    .map(i => pending.updates[i.id] ? { ...i, ...pending.updates[i.id], _status: 'update' } : i);
+  const created = pending.creates.map(c => ({ ...c, _status: 'create' }));
+  return [...visible, ...created];
+}
+
+// ── LOGIN ──
+function LoginScreen({ onLogin }) {
+  const [email, setEmail] = useState('');
+  const [pass, setPass] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState('');
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true); setErr('');
+    const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+    if (error) { setErr(error.message); setLoading(false); }
+    else onLogin();
+  }
+
+  return (
+    <div className="login-wrap">
+      <div className="login-card">
+        <div className="login-logo">La <em>Petite Suisse</em></div>
+        <div className="login-sub">Menu Admin</div>
+        <form onSubmit={handleSubmit}>
+          <div className="field">
+            <label>Email</label>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoFocus />
+          </div>
+          <div className="field">
+            <label>Password</label>
+            <input type="password" value={pass} onChange={e => setPass(e.target.value)} required />
+          </div>
+          <button type="submit" className="btn btn-gold" style={{width:'100%',marginTop:8}} disabled={loading}>
+            {loading ? 'Signing in…' : 'Sign In'}
+          </button>
+          {err && <div className="err">{err}</div>}
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ── EDIT MODAL ──
+function EditModal({ item, section, onSave, onClose }) {
+  const isNew = !item?.id && !item?._status;
+  const [form, setForm] = useState({
+    section: item?.section || section || 'partager',
+    name: item?.name || '',
+    description: item?.description || '',
+    price: item?.price ?? '',
+    badge: item?.badge || '',
+    visible: item?.visible !== false,
+  });
+
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  function handleSave() {
+    if (!form.name.trim()) return;
+    onSave({
+      ...(item || {}),
+      ...form,
+      price: form.price === '' ? null : parseFloat(form.price),
+      position: item?.position ?? Date.now(),
+    });
+  }
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <div className="modal-title">{isNew ? 'Add Item' : 'Edit Item'}</div>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div className="modal-body">
+          <div className="field">
+            <label>Section</label>
+            <select style={{width:'100%',background:'var(--bg3)',border:'1px solid var(--border)',color:'var(--cream)',padding:'10px 14px',fontFamily:'DM Sans, sans-serif',fontSize:13,outline:'none'}}
+              value={form.section} onChange={e => set('section', e.target.value)}>
+              {SECTIONS.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
+            </select>
+          </div>
+          <div className="field">
+            <label>Name *</label>
+            <input className="field-input" style={{width:'100%',background:'var(--bg3)',border:'1px solid var(--border)',color:'var(--cream)',padding:'10px 14px',fontFamily:'DM Sans, sans-serif',fontSize:13,outline:'none'}}
+              value={form.name} onChange={e => set('name', e.target.value)} placeholder="Item name" />
+          </div>
+          <div className="field">
+            <label>Description</label>
+            <textarea className="field-input" value={form.description} onChange={e => set('description', e.target.value)} placeholder="Short description…" />
+          </div>
+          <div className="form-row">
+            <div className="field">
+              <label>Price (€)</label>
+              <input style={{width:'100%',background:'var(--bg3)',border:'1px solid var(--border)',color:'var(--cream)',padding:'10px 14px',fontFamily:'DM Sans, sans-serif',fontSize:13,outline:'none'}}
+                type="number" step="0.01" value={form.price} onChange={e => set('price', e.target.value)} placeholder="0.00" />
+            </div>
+            <div className="field">
+              <label>Badge (optional note)</label>
+              <input style={{width:'100%',background:'var(--bg3)',border:'1px solid var(--border)',color:'var(--cream)',padding:'10px 14px',fontFamily:'DM Sans, sans-serif',fontSize:13,outline:'none'}}
+                value={form.badge} onChange={e => set('badge', e.target.value)} placeholder="e.g. Supplément burrata 8€" />
+            </div>
+          </div>
+          <div className="toggle-row">
+            <label className="toggle">
+              <input type="checkbox" checked={form.visible} onChange={e => set('visible', e.target.checked)} />
+              <span className="toggle-slider"></span>
+            </label>
+            <span className="toggle-label">Visible on menu</span>
+          </div>
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-outline" onClick={onClose}>Cancel</button>
+          <button className="btn btn-gold" onClick={handleSave} disabled={!form.name.trim()}>Save to drafts</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── PUBLISH MODAL ──
+function PublishModal({ pending, dbItems, onConfirm, onClose }) {
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState('');
+
+  const creates = pending.creates;
+  const updates = Object.entries(pending.updates).map(([id, fields]) => ({
+    id, ...fields, _origName: dbItems.find(i => i.id === id)?.name
+  }));
+  const deletes = pending.deletes.map(id => dbItems.find(i => i.id === id)).filter(Boolean);
+  const total = creates.length + updates.length + deletes.length;
+
+  async function handleConfirm() {
+    setLoading(true); setErr('');
+    try {
+      if (creates.length) {
+        const rows = creates.map(({ _status, tempId, ...c }) => ({ ...c, status: 'published' }));
+        const { error } = await sb.from('menu_items').insert(rows);
+        if (error) throw error;
+      }
+      for (const { id, _origName, ...fields } of updates) {
+        const { error } = await sb.from('menu_items').update({ ...fields, status: 'published' }).eq('id', id);
+        if (error) throw error;
+      }
+      for (const item of deletes) {
+        const { error } = await sb.from('menu_items').delete().eq('id', item.id);
+        if (error) throw error;
+      }
+      onConfirm();
+    } catch (e) {
+      setErr(e.message);
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <div className="modal-title">Review & Publish</div>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div className="modal-body">
+          {total === 0 ? (
+            <div className="pub-empty">No pending changes.</div>
+          ) : (
+            <>
+              {creates.length > 0 && (
+                <div className="pub-section">
+                  <div className="pub-section-title creates">+ {creates.length} new item{creates.length > 1 ? 's' : ''}</div>
+                  {creates.map((c, i) => (
+                    <div className="pub-item" key={i}>
+                      <div className="pub-item-name">{c.name} {c.price ? `— ${Number(c.price).toFixed(2)} €` : ''}</div>
+                      <div className="pub-item-section">{sectionLabel(c.section)}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {updates.length > 0 && (
+                <div className="pub-section">
+                  <div className="pub-section-title updates">~ {updates.length} updated item{updates.length > 1 ? 's' : ''}</div>
+                  {updates.map((u, i) => (
+                    <div className="pub-item" key={i}>
+                      <div className="pub-item-name">{u._origName} → {u.name}</div>
+                      <div className="pub-item-section">{sectionLabel(u.section)}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {deletes.length > 0 && (
+                <div className="pub-section">
+                  <div className="pub-section-title deletes">× {deletes.length} deleted item{deletes.length > 1 ? 's' : ''}</div>
+                  {deletes.map((d, i) => (
+                    <div className="pub-item" key={i}>
+                      <div className="pub-item-name">{d.name}</div>
+                      <div className="pub-item-section">{sectionLabel(d.section)}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+          {err && <div className="err" style={{marginTop:12}}>{err}</div>}
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-outline" onClick={onClose}>Cancel</button>
+          {total > 0 && (
+            <button className="btn btn-gold" onClick={handleConfirm} disabled={loading}>
+              {loading ? 'Publishing…' : `Confirm & Publish ${total} change${total > 1 ? 's' : ''}`}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── MAIN APP ──
+function AdminApp({ onLogout }) {
+  const [dbItems, setDbItems] = useState([]);
+  const [pending, setPendingState] = useState(loadPending());
+  const [activeSection, setActiveSection] = useState('partager');
+  const [editItem, setEditItem] = useState(null);
+  const [showPublish, setShowPublish] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [success, setSuccess] = useState(false);
+
+  function setPending(p) { setPendingState(p); savePending(p); }
+
+  async function fetchItems() {
+    setLoading(true);
+    const { data } = await sb.from('menu_items').select('*').order('position', { ascending: true });
+    setDbItems(data || []);
+    setLoading(false);
+  }
+
+  useEffect(() => { fetchItems(); }, []);
+
+  const allItems = mergeItems(dbItems, pending);
+  const sectionItems = allItems.filter(i => i.section === activeSection);
+  const count = pendingCount(pending);
+
+  function handleSaveEdit(item) {
+    const p = { ...pending };
+    if (item._status === 'create' || (!item.id && !item._status)) {
+      // New item
+      const tempId = 'temp_' + Date.now();
+      p.creates = [...p.creates.filter(c => c.tempId !== item.tempId), { ...item, tempId, _status: 'create' }];
+    } else if (item.id) {
+      // Edit existing
+      p.updates = { ...p.updates, [item.id]: item };
+    }
+    setPending(p);
+    setEditItem(null);
+  }
+
+  function handleDelete(item) {
+    const p = { ...pending };
+    if (item._status === 'create') {
+      p.creates = p.creates.filter(c => c.tempId !== item.tempId);
+    } else {
+      p.deletes = [...p.deletes, item.id];
+      delete p.updates[item.id];
+    }
+    setPending(p);
+  }
+
+  function handleUndoDelete(id) {
+    const p = { ...pending, deletes: pending.deletes.filter(d => d !== id) };
+    setPending(p);
+  }
+
+  function handleToggleVisible(item) {
+    const newVisible = !item.visible;
+    if (item._status === 'create') {
+      const p = { ...pending, creates: pending.creates.map(c => c.tempId === item.tempId ? { ...c, visible: newVisible } : c) };
+      setPending(p);
+    } else {
+      const p = { ...pending, updates: { ...pending.updates, [item.id]: { ...(pending.updates[item.id] || item), visible: newVisible } } };
+      setPending(p);
+    }
+  }
+
+  function handlePublishConfirm() {
+    setPending({ creates: [], updates: {}, deletes: [] });
+    setShowPublish(false);
+    setSuccess(true);
+    fetchItems();
+    setTimeout(() => setSuccess(false), 4000);
+  }
+
+  async function handleLogout() {
+    await sb.auth.signOut();
+    onLogout();
+  }
+
+  const sectionCounts = {};
+  SECTIONS.forEach(s => {
+    sectionCounts[s.id] = allItems.filter(i => i.section === s.id).length;
+  });
+
+  return (
+    <div className="app">
+      {/* TOPBAR */}
+      <div className="topbar">
+        <div className="topbar-logo">La <em>Petite Suisse</em> — Admin</div>
+        <div className="topbar-right">
+          <div
+            className={`pending-badge${count === 0 ? ' none' : ''}`}
+            onClick={() => count > 0 && setShowPublish(true)}
+          >
+            {count === 0 ? 'No pending changes' : `${count} pending change${count > 1 ? 's' : ''} — Review & Publish`}
+          </div>
+          <button className="logout-btn" onClick={handleLogout}>Sign out</button>
+        </div>
+      </div>
+
+      {/* SIDEBAR */}
+      <div className="sidebar">
+        <div className="sidebar-section">Sections</div>
+        {SECTIONS.map(s => (
+          <div
+            key={s.id}
+            className={`sidebar-item${activeSection === s.id ? ' active' : ''}`}
+            onClick={() => setActiveSection(s.id)}
+          >
+            <span className="sidebar-item-label">{s.label}</span>
+            <span className="sidebar-count">{sectionCounts[s.id] || 0}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* MAIN */}
+      <div className="main">
+        {success && <div className="success-bar" style={{marginBottom:20}}>✓ Changes published successfully — menu is now live.</div>}
+        <div className="main-header">
+          <div className="main-title">{sectionLabel(activeSection)}</div>
+          <button className="btn btn-gold btn-sm" onClick={() => setEditItem({ section: activeSection })}>+ Add item</button>
+        </div>
+
+        {loading ? (
+          <div style={{color:'var(--muted)',padding:40,textAlign:'center'}}>Loading…</div>
+        ) : sectionItems.length === 0 ? (
+          <div className="empty-state">
+            <p>No items in this section yet.</p>
+            <button className="btn btn-outline" onClick={() => setEditItem({ section: activeSection })}>Add the first item</button>
+          </div>
+        ) : (
+          <div className="item-list">
+            {sectionItems.map((item, idx) => {
+              const isDeleted = item.id && pending.deletes.includes(item.id);
+              const rowClass = [
+                'item-row',
+                item._status === 'create' ? 'pending-create' : '',
+                item._status === 'update' ? 'pending-update' : '',
+                isDeleted ? 'pending-delete' : '',
+                !item.visible ? 'hidden' : '',
+              ].filter(Boolean).join(' ');
+
+              return (
+                <div className={rowClass} key={item.id || item.tempId || idx}>
+                  <div>
+                    <div className="item-name">
+                      {item.name}
+                      {item.badge && <span className="item-badge">{item.badge}</span>}
+                    </div>
+                    {item.description && <div className="item-desc">{item.description}</div>}
+                    <div className="item-meta" style={{marginTop:6}}>
+                      {item.price != null && <span className="item-price">{Number(item.price).toFixed(2)} €</span>}
+                      {item._status === 'create' && <span className="pending-tag create">New</span>}
+                      {item._status === 'update' && <span className="pending-tag update">Edited</span>}
+                      {isDeleted && <span className="pending-tag delete">To delete</span>}
+                      {!item.visible && <span style={{fontSize:10,color:'var(--muted)',letterSpacing:'0.1em'}}>HIDDEN</span>}
+                    </div>
+                  </div>
+                  <div className="item-actions">
+                    {isDeleted ? (
+                      <button className="icon-btn undo" onClick={() => handleUndoDelete(item.id)} title="Undo delete">↩</button>
+                    ) : (
+                      <>
+                        <button
+                          className={`icon-btn${item.visible ? ' active' : ''}`}
+                          onClick={() => handleToggleVisible(item)}
+                          title={item.visible ? 'Hide from menu' : 'Show on menu'}
+                        >{item.visible ? '👁' : '○'}</button>
+                        <button className="icon-btn" onClick={() => setEditItem(item)} title="Edit">✎</button>
+                        <button className="icon-btn del" onClick={() => handleDelete(item)} title="Delete">✕</button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {editItem !== null && (
+        <EditModal
+          item={editItem}
+          section={activeSection}
+          onSave={handleSaveEdit}
+          onClose={() => setEditItem(null)}
+        />
+      )}
+      {showPublish && (
+        <PublishModal
+          pending={pending}
+          dbItems={dbItems}
+          onConfirm={handlePublishConfirm}
+          onClose={() => setShowPublish(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+// ── ROOT ──
+function Root() {
+  const [user, setUser] = useState(null);
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    sb.auth.getSession().then(({ data }) => {
+      setUser(data.session?.user || null);
+      setChecking(false);
+    });
+    const { data: { subscription } } = sb.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user || null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  if (checking) return <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',color:'var(--muted)'}}>Loading…</div>;
+  if (!user) return <LoginScreen onLogin={() => {}} />;
+  return <AdminApp onLogout={() => setUser(null)} />;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Root />);
+</script>
+</body>
+</html>
