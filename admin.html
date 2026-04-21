@@ -225,7 +225,7 @@ function LoginScreen() {
 }
 
 // ── ITEM EDIT MODAL ──
-function EditModal({ item, section, sections, onSave, onClose }) {
+function EditModal({ item, section, sections, onSave, onClose, nextPosition }) {
   const isNew = !item?.id && !item?._status;
   const [form, setForm] = useState({
     section: item?.section || section || (sections[0]?.key || ''),
@@ -239,7 +239,7 @@ function EditModal({ item, section, sections, onSave, onClose }) {
 
   function handleSave() {
     if (!form.name.trim()) return;
-    onSave({ ...(item || {}), ...form, price: form.price === '' ? null : parseFloat(form.price), position: item?.position ?? Date.now() });
+    onSave({ ...(item || {}), ...form, price: form.price === '' ? null : parseFloat(form.price), position: item?.position ?? nextPosition ?? 10 });
   }
 
   const inputStyle = { width:'100%', background:'var(--bg3)', border:'1px solid var(--border)', color:'var(--cream)', padding:'10px 14px', fontFamily:'DM Sans, sans-serif', fontSize:13, outline:'none' };
@@ -797,7 +797,8 @@ function AdminApp({ onLogout }) {
       </div>
 
       {editItem !== null && (
-        <EditModal item={editItem} section={activeSection} sections={sections} onSave={handleSaveEdit} onClose={() => setEditItem(null)} />
+        <EditModal item={editItem} section={activeSection} sections={sections} onSave={handleSaveEdit} onClose={() => setEditItem(null)}
+          nextPosition={Math.max(0, ...sectionItems.map(i => i.position || 0)) + 10} />
       )}
       {showPublish && (
         <PublishModal pending={pending} dbItems={dbItems} sections={sections} onConfirm={handlePublishConfirm} onClose={() => setShowPublish(false)} />
