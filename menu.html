@@ -68,7 +68,6 @@
     .kids-list li { font-size: 14px; color: var(--cream-muted); padding: 5px 0; padding-left: 14px; position: relative; border-bottom: 1px solid oklch(0.17 0.01 55); }
     .kids-list li::before { content: '—'; position: absolute; left: 0; color: var(--border); }
 
-    .loading-items { padding: 32px 0; color: var(--cream-muted); font-size: 13px; text-align: center; letter-spacing: 0.05em; }
     .loading-shimmer { height: 64px; background: linear-gradient(90deg, var(--bg2) 25%, oklch(0.17 0.01 55) 50%, var(--bg2) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; margin-bottom: 1px; }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
@@ -98,116 +97,13 @@
   </div>
 
   <nav class="cat-nav">
-    <div class="cat-nav-inner">
-      <a class="cat-tab active" href="#partager">À Partager</a>
-      <a class="cat-tab" href="#froides">Entrées Froides</a>
-      <a class="cat-tab" href="#chaudes">Entrées Chaudes</a>
-      <a class="cat-tab" href="#salades">Salades</a>
-      <a class="cat-tab" href="#plats">Plats</a>
-      <a class="cat-tab" href="#pates">Pâtes</a>
-      <a class="cat-tab" href="#viande">Viandes</a>
-      <a class="cat-tab" href="#burgers">Burgers</a>
-      <a class="cat-tab" href="#kids">Kids</a>
-      <a class="cat-tab" href="#desserts">Desserts</a>
+    <div class="cat-nav-inner" id="cat-nav-inner">
+      <span style="color:var(--cream-muted);padding:16px 22px;font-size:11px;letter-spacing:0.1em;">Loading…</span>
     </div>
   </nav>
 
-  <main class="menu-content">
-
-    <section class="menu-section" id="partager">
-      <div class="section-header">
-        <p class="section-label-small">Pour commencer</p>
-        <h2 class="section-heading">À Partager</h2>
-      </div>
-      <div id="items-partager"></div>
-    </section>
-
-    <section class="menu-section" id="froides">
-      <div class="section-header">
-        <p class="section-label-small">Entrées</p>
-        <h2 class="section-heading">Entrées Froides</h2>
-      </div>
-      <div id="items-froides"></div>
-    </section>
-
-    <section class="menu-section" id="chaudes">
-      <div class="section-header">
-        <p class="section-label-small">Entrées</p>
-        <h2 class="section-heading">Entrées Chaudes</h2>
-      </div>
-      <div id="items-chaudes"></div>
-    </section>
-
-    <section class="menu-section" id="salades">
-      <div class="section-header">
-        <p class="section-label-small">Légèreté</p>
-        <h2 class="section-heading">Salades</h2>
-      </div>
-      <div id="items-salades"></div>
-    </section>
-
-    <section class="menu-section" id="plats">
-      <div class="section-header">
-        <p class="section-label-small">Cuisine du marché</p>
-        <h2 class="section-heading">Plats</h2>
-      </div>
-      <div id="items-plats"></div>
-    </section>
-
-    <section class="menu-section" id="pates">
-      <div class="section-header">
-        <p class="section-label-small">Pasta</p>
-        <h2 class="section-heading">Nos Pâtes</h2>
-      </div>
-      <div id="items-pates"></div>
-    </section>
-
-    <section class="menu-section" id="viande">
-      <div class="section-header">
-        <p class="section-label-small">Feu vif</p>
-        <h2 class="section-heading">Nos Pièces de Viande</h2>
-        <p class="section-note">Cuisson au choix : Bleu chaud · Saignant · À point · Bien cuit<br>Servies avec salade et sauce au choix : poivre vert, béarnaise, champignons, rochefort et choron piquante</p>
-      </div>
-      <div id="items-viande"></div>
-      <div class="sides-group">
-        <p class="sides-label">Accompagnements payants</p>
-        <div id="items-viande_sides"></div>
-      </div>
-      <div class="sides-group">
-        <p class="sides-label">Extra</p>
-        <div id="items-viande_extra"></div>
-      </div>
-    </section>
-
-    <section class="menu-section" id="burgers">
-      <div class="section-header">
-        <p class="section-label-small">Entre les deux</p>
-        <h2 class="section-heading">Burgers</h2>
-      </div>
-      <div class="burger-note">
-        Tous les burgers sont servis avec frites incluses — ou frites de patate douce (+1,50 €).<br>
-        Personnalisation possible : retrait d'ingrédients ou ajout d'extras : steak de bœuf, tenders de poulet, filet de poisson pané, piment, sauce, bacon, cheddar, Tomme de Savoie.<br><br>
-        <em>Tous nos burgers sont disponibles en version végétarienne.</em>
-      </div>
-      <div id="items-burgers"></div>
-    </section>
-
-    <section class="menu-section" id="kids">
-      <div class="section-header">
-        <p class="section-label-small">Pour les petits</p>
-        <h2 class="section-heading">Menu Kids</h2>
-      </div>
-      <div id="items-kids"></div>
-    </section>
-
-    <section class="menu-section" id="desserts">
-      <div class="section-header">
-        <p class="section-label-small">Pour finir</p>
-        <h2 class="section-heading">Desserts</h2>
-      </div>
-      <div id="items-desserts"></div>
-    </section>
-
+  <main class="menu-content" id="menu-sections-container">
+    <!-- Populated dynamically -->
   </main>
 
   <footer class="menu-footer">
@@ -217,11 +113,10 @@
   </footer>
 
   <script>
-    // ── Supabase config ──
     const SB_URL = 'https://tjvmsdsdmtyicuzioedn.supabase.co';
     const SB_KEY = 'sb_publishable_4XDdA7LlmEhI8d9-Wlc3iA_79xZFZb7';
+    const HEADERS = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
 
-    // ── Helpers ──
     function esc(str) {
       if (!str) return '';
       return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -231,134 +126,142 @@
       return Number(p).toFixed(2).replace('.', ',') + ' €';
     }
 
-    // ── Show shimmer loaders ──
-    const STANDARD_SECTIONS = ['partager','froides','chaudes','salades','plats','pates','viande','burgers','desserts'];
-    const SIDE_SECTIONS = ['viande_sides','viande_extra'];
-    const ALL_SECTIONS = [...STANDARD_SECTIONS, ...SIDE_SECTIONS, 'kids'];
-
-    ALL_SECTIONS.forEach(id => {
-      const el = document.getElementById('items-' + id);
-      if (el && !SIDE_SECTIONS.includes(id)) {
-        el.innerHTML = [1,2,3].map(() => '<div class="loading-shimmer"></div>').join('');
-      }
-    });
-
-    // ── Renderers ──
     function renderStandardItem(item) {
-      return `
-        <div class="item">
-          <div class="item-name">${esc(item.name)}${item.badge ? `<span class="badge">${esc(item.badge)}</span>` : ''}</div>
-          <div class="item-price">${fmtPrice(item.price)}</div>
-          ${item.description ? `<div class="item-desc">${esc(item.description)}</div>` : ''}
-        </div>`;
+      return `<div class="item">
+        <div class="item-name">${esc(item.name)}${item.badge ? `<span class="badge">${esc(item.badge)}</span>` : ''}</div>
+        <div class="item-price">${fmtPrice(item.price)}</div>
+        ${item.description ? `<div class="item-desc">${esc(item.description)}</div>` : ''}
+      </div>`;
     }
 
     function renderSideRow(item) {
-      return `
-        <div class="side-row">
-          <span class="side-name">${esc(item.name)}</span>
-          <span class="side-price">${fmtPrice(item.price)}</span>
-        </div>`;
+      return `<div class="side-row">
+        <span class="side-name">${esc(item.name)}</span>
+        <span class="side-price">${fmtPrice(item.price)}</span>
+      </div>`;
     }
 
     function renderKids(item) {
       if (!item) return '';
-      // Parse description: "Plat au choix : A · B — Dessert au choix : C · D — + 1 soft"
       const parts = (item.description || '').split(' — ');
-      const platPart  = parts.find(p => p.toLowerCase().includes('plat')) || '';
+      const platPart    = parts.find(p => p.toLowerCase().includes('plat')) || '';
       const dessertPart = parts.find(p => p.toLowerCase().includes('dessert')) || '';
       const platItems    = platPart.includes(':')    ? platPart.split(':')[1].trim().split(' · ') : [];
       const dessertItems = dessertPart.includes(':') ? dessertPart.split(':')[1].trim().split(' · ') : [];
-
-      return `
-        <div class="kids-box">
-          <p style="font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:var(--cream-muted);">${esc(item.badge) || 'Plat + Dessert + 1 soft'}</p>
-          <div class="kids-price">${fmtPrice(item.price)}</div>
-          <div class="kids-cols">
-            <div>
-              <p class="kids-col-title">Plats au choix</p>
-              <ul class="kids-list">${platItems.map(i => `<li>${esc(i.trim())}</li>`).join('')}</ul>
-            </div>
-            <div>
-              <p class="kids-col-title">Desserts au choix</p>
-              <ul class="kids-list">${dessertItems.map(i => `<li>${esc(i.trim())}</li>`).join('')}</ul>
-            </div>
+      return `<div class="kids-box">
+        <p style="font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:var(--cream-muted);">${esc(item.badge) || 'Plat + Dessert + 1 soft'}</p>
+        <div class="kids-price">${fmtPrice(item.price)}</div>
+        <div class="kids-cols">
+          <div>
+            <p class="kids-col-title">Plats au choix</p>
+            <ul class="kids-list">${platItems.map(i => `<li>${esc(i.trim())}</li>`).join('')}</ul>
           </div>
-        </div>`;
+          <div>
+            <p class="kids-col-title">Desserts au choix</p>
+            <ul class="kids-list">${dessertItems.map(i => `<li>${esc(i.trim())}</li>`).join('')}</ul>
+          </div>
+        </div>
+      </div>`;
     }
 
-    // ── Fetch & render ──
-    async function loadMenu() {
-      try {
-        const res = await fetch(
-          `${SB_URL}/rest/v1/menu_items?status=eq.published&visible=eq.true&order=position.asc`,
-          { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } }
-        );
-        if (!res.ok) throw new Error('Failed to load menu');
-        const items = await res.json();
+    function buildMenu(sections, items) {
+      const topLevel = sections.filter(s => !s.parent_key);
+      const childSections = sections.filter(s => s.parent_key);
 
-        // Group by section
-        const bySection = {};
-        items.forEach(item => {
-          if (!bySection[item.section]) bySection[item.section] = [];
-          bySection[item.section].push(item);
-        });
+      const bySection = {};
+      items.forEach(item => {
+        (bySection[item.section] = bySection[item.section] || []).push(item);
+      });
 
-        // Render standard sections
-        STANDARD_SECTIONS.forEach(id => {
-          const el = document.getElementById('items-' + id);
-          if (!el) return;
-          const sectionItems = bySection[id] || [];
-          el.innerHTML = sectionItems.length
-            ? sectionItems.map(renderStandardItem).join('')
-            : '<p style="color:var(--cream-muted);font-size:13px;padding:20px 0;">Revenez bientôt.</p>';
-        });
+      // Nav tabs
+      document.getElementById('cat-nav-inner').innerHTML = topLevel.map((s, i) =>
+        `<a class="cat-tab${i === 0 ? ' active' : ''}" href="#sec-${esc(s.key)}">${esc(s.label)}</a>`
+      ).join('');
 
-        // Render sides
-        SIDE_SECTIONS.forEach(id => {
-          const el = document.getElementById('items-' + id);
-          if (!el) return;
-          const sectionItems = bySection[id] || [];
-          el.innerHTML = sectionItems.map(renderSideRow).join('');
-        });
+      // Sections
+      const container = document.getElementById('menu-sections-container');
+      container.innerHTML = '';
 
-        // Render kids
-        const kidsEl = document.getElementById('items-kids');
-        if (kidsEl) {
-          const kidsItems = bySection['kids'] || [];
-          kidsEl.innerHTML = kidsItems.length ? renderKids(kidsItems[0]) : '';
+      topLevel.forEach(s => {
+        const sItems = bySection[s.key] || [];
+        const children = childSections.filter(c => c.parent_key === s.key);
+
+        let itemsHtml = '';
+        if (s.type === 'kids') {
+          itemsHtml = sItems.length ? renderKids(sItems[0]) : '';
+        } else {
+          itemsHtml = sItems.map(renderStandardItem).join('') ||
+            '<p style="color:var(--cream-muted);font-size:13px;padding:20px 0;">Revenez bientôt.</p>';
         }
 
-      } catch (err) {
-        console.error(err);
-        // Fallback: show a gentle error
-        ALL_SECTIONS.forEach(id => {
-          const el = document.getElementById('items-' + id);
-          if (el && el.querySelector('.loading-shimmer')) {
-            el.innerHTML = '';
+        const childHtml = children.map(child => {
+          const childItems = bySection[child.key] || [];
+          return `<div class="sides-group">
+            <p class="sides-label">${esc(child.label)}</p>
+            ${childItems.map(renderSideRow).join('')}
+          </div>`;
+        }).join('');
+
+        const noteHtml = s.note
+          ? (s.key === 'burgers'
+              ? `<div class="burger-note">${esc(s.note)}</div>`
+              : `<p class="section-note">${esc(s.note)}</p>`)
+          : '';
+
+        const secEl = document.createElement('section');
+        secEl.className = 'menu-section';
+        secEl.id = 'sec-' + s.key;
+        secEl.innerHTML = `
+          <div class="section-header">
+            ${s.subtitle ? `<p class="section-label-small">${esc(s.subtitle)}</p>` : ''}
+            <h2 class="section-heading">${esc(s.label)}</h2>
+            ${s.key !== 'burgers' ? noteHtml : ''}
+          </div>
+          ${s.key === 'burgers' ? noteHtml : ''}
+          ${itemsHtml}
+          ${childHtml}`;
+        container.appendChild(secEl);
+      });
+
+      initObserver();
+    }
+
+    function initObserver() {
+      const menuSections = document.querySelectorAll('.menu-section');
+      const tabs = document.querySelectorAll('.cat-tab');
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            tabs.forEach(t => t.classList.remove('active'));
+            const active = document.querySelector(`.cat-tab[href="#${entry.target.id}"]`);
+            if (active) {
+              active.classList.add('active');
+              active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
           }
         });
+      }, { rootMargin: '-40% 0px -55% 0px' });
+      menuSections.forEach(s => obs.observe(s));
+    }
+
+    async function loadMenu() {
+      try {
+        const [secRes, itemsRes] = await Promise.all([
+          fetch(`${SB_URL}/rest/v1/menu_sections?visible=eq.true&order=position.asc`, { headers: HEADERS }),
+          fetch(`${SB_URL}/rest/v1/menu_items?status=eq.published&visible=eq.true&order=position.asc`, { headers: HEADERS })
+        ]);
+        if (!secRes.ok || !itemsRes.ok) throw new Error('Failed to load');
+        const [sections, items] = await Promise.all([secRes.json(), itemsRes.json()]);
+        buildMenu(sections, items);
+      } catch (err) {
+        console.error(err);
+        document.getElementById('cat-nav-inner').innerHTML = '';
+        document.getElementById('menu-sections-container').innerHTML =
+          '<p style="color:var(--cream-muted);text-align:center;padding:60px 24px;">Unable to load menu. Please try again later.</p>';
       }
     }
 
     loadMenu();
-
-    // ── Active tab on scroll ──
-    const sections = document.querySelectorAll('.menu-section');
-    const tabs = document.querySelectorAll('.cat-tab');
-    const tabObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          tabs.forEach(t => t.classList.remove('active'));
-          const active = document.querySelector(`.cat-tab[href="#${entry.target.id}"]`);
-          if (active) {
-            active.classList.add('active');
-            active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-          }
-        }
-      });
-    }, { rootMargin: '-40% 0px -55% 0px' });
-    sections.forEach(s => tabObserver.observe(s));
   </script>
 </body>
 </html>

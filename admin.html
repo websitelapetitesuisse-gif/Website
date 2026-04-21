@@ -34,8 +34,6 @@
     .btn-gold:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-outline { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 8px 16px; }
     .btn-outline:hover { color: var(--cream); border-color: var(--muted); }
-    .btn-danger { background: transparent; color: var(--red); border: 1px solid var(--red); padding: 6px 12px; font-size: 11px; }
-    .btn-danger:hover { background: var(--red); color: #fff; }
     .btn-sm { padding: 6px 12px; font-size: 11px; }
     .err { font-size: 13px; color: var(--red); margin-top: 12px; }
 
@@ -54,15 +52,18 @@
     .logout-btn:hover { color: var(--cream); }
 
     /* SIDEBAR */
-    .sidebar { background: var(--bg2); border-right: 1px solid var(--border); overflow-y: auto; }
+    .sidebar { background: var(--bg2); border-right: 1px solid var(--border); overflow-y: auto; display: flex; flex-direction: column; }
     .sidebar-section { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); padding: 20px 20px 8px; }
     .sidebar-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; cursor: pointer; transition: background 0.15s; border-left: 2px solid transparent; }
     .sidebar-item:hover { background: var(--bg3); }
-    .sidebar-item.active { background: var(--bg3); border-left-color: var(--gold); color: var(--cream); }
+    .sidebar-item.active { background: var(--bg3); border-left-color: var(--gold); }
     .sidebar-item-label { font-size: 13px; color: var(--muted); }
     .sidebar-item.active .sidebar-item-label { color: var(--cream); }
     .sidebar-count { font-size: 11px; color: var(--border); background: var(--bg3); padding: 2px 7px; border-radius: 10px; }
     .sidebar-item.active .sidebar-count { color: var(--muted); }
+    .sidebar-view-toggle { display: flex; margin: 12px 12px 4px; gap: 1px; }
+    .view-tab { flex: 1; background: var(--bg3); border: 1px solid var(--border); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 7px 4px; cursor: pointer; transition: all 0.15s; text-align: center; }
+    .view-tab.active { background: var(--gold); color: var(--bg); border-color: var(--gold); }
 
     /* MAIN */
     .main { overflow-y: auto; padding: 32px; }
@@ -106,8 +107,10 @@
     .modal-body { padding: 24px; }
     .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    textarea.field-input { width: 100%; background: var(--bg3); border: 1px solid var(--border); color: var(--cream); font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 10px 14px; outline: none; resize: vertical; min-height: 80px; transition: border-color 0.2s; }
-    textarea.field-input:focus { border-color: var(--gold); }
+    .field-input { width: 100%; background: var(--bg3); border: 1px solid var(--border); color: var(--cream); font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 10px 14px; outline: none; transition: border-color 0.2s; }
+    .field-input:focus { border-color: var(--gold); }
+    textarea.field-input { resize: vertical; min-height: 80px; }
+    .field-hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
     .toggle-row { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
     .toggle { position: relative; width: 36px; height: 20px; cursor: pointer; }
     .toggle input { opacity: 0; width: 0; height: 0; }
@@ -116,6 +119,27 @@
     .toggle-slider::before { content: ''; position: absolute; height: 14px; width: 14px; left: 3px; top: 3px; background: white; transition: 0.2s; border-radius: 50%; }
     .toggle input:checked + .toggle-slider::before { transform: translateX(16px); }
     .toggle-label { font-size: 13px; color: var(--muted); }
+
+    /* SECTIONS MANAGER */
+    .sec-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+    .sec-row { background: var(--bg2); display: grid; grid-template-columns: auto 1fr auto; gap: 12px; padding: 14px 20px; align-items: center; transition: background 0.15s; }
+    .sec-row:hover { background: var(--bg3); }
+    .sec-row.hidden { opacity: 0.45; }
+    .sec-row.is-child { padding-left: 40px; background: var(--bg); }
+    .sec-row.is-child:hover { background: var(--bg3); }
+    .reorder-btns { display: flex; flex-direction: column; gap: 2px; }
+    .reorder-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 10px; padding: 2px 5px; cursor: pointer; line-height: 1; transition: all 0.15s; }
+    .reorder-btn:hover { border-color: var(--muted); color: var(--cream); }
+    .reorder-btn:disabled { opacity: 0.2; cursor: default; }
+    .sec-info { min-width: 0; }
+    .sec-label { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 400; color: var(--cream); }
+    .sec-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .sec-badges { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
+    .sec-badge { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 6px; border: 1px solid var(--border); color: var(--muted); }
+    .sec-badge.type-sides { border-color: var(--red); color: var(--red); }
+    .sec-badge.type-kids { border-color: var(--gold); color: var(--gold); }
+    .sec-badge.hidden-badge { border-color: var(--muted); }
+    .sec-actions { display: flex; gap: 6px; flex-shrink: 0; }
 
     /* PUBLISH MODAL */
     .pub-section { margin-bottom: 20px; }
@@ -143,24 +167,6 @@ const sb = createClient(
 
 const PENDING_KEY = 'lps_admin_pending';
 
-const SECTIONS = [
-  { id: 'partager',     label: 'À Partager' },
-  { id: 'froides',     label: 'Entrées Froides' },
-  { id: 'chaudes',     label: 'Entrées Chaudes' },
-  { id: 'salades',     label: 'Salades' },
-  { id: 'plats',       label: 'Plats' },
-  { id: 'pates',       label: 'Nos Pâtes' },
-  { id: 'viande',      label: 'Viandes' },
-  { id: 'viande_sides',label: 'Accompagnements' },
-  { id: 'viande_extra',label: 'Extras Viande' },
-  { id: 'burgers',     label: 'Burgers' },
-  { id: 'kids',        label: 'Menu Kids' },
-  { id: 'desserts',    label: 'Desserts' },
-];
-
-const sectionLabel = id => SECTIONS.find(s => s.id === id)?.label || id;
-
-// Pending helpers
 const loadPending = () => JSON.parse(localStorage.getItem(PENDING_KEY) || 'null') || { creates: [], updates: {}, deletes: [] };
 const savePending = p => localStorage.setItem(PENDING_KEY, JSON.stringify(p));
 const pendingCount = p => p.creates.length + Object.keys(p.updates).length + p.deletes.length;
@@ -173,8 +179,15 @@ function mergeItems(dbItems, pending) {
   return [...visible, ...created];
 }
 
+function slugify(str) {
+  return str.toLowerCase()
+    .replace(/[àâä]/g, 'a').replace(/[éèêë]/g, 'e').replace(/[îï]/g, 'i')
+    .replace(/[ôö]/g, 'o').replace(/[ùûü]/g, 'u').replace(/[ç]/g, 'c')
+    .replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+}
+
 // ── LOGIN ──
-function LoginScreen({ onLogin }) {
+function LoginScreen() {
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
   const [loading, setLoading] = useState(false);
@@ -185,13 +198,12 @@ function LoginScreen({ onLogin }) {
     setLoading(true); setErr('');
     const { error } = await sb.auth.signInWithPassword({ email, password: pass });
     if (error) { setErr(error.message); setLoading(false); }
-    else onLogin();
   }
 
   return (
     <div className="login-wrap">
       <div className="login-card">
-        <div className="login-logo">La <em>Petite Suisse</em></div>
+        <div className="login-logo">La <em style={{fontStyle:'italic',color:'var(--gold)'}}>Petite Suisse</em></div>
         <div className="login-sub">Menu Admin</div>
         <form onSubmit={handleSubmit}>
           <div className="field">
@@ -212,29 +224,25 @@ function LoginScreen({ onLogin }) {
   );
 }
 
-// ── EDIT MODAL ──
-function EditModal({ item, section, onSave, onClose }) {
+// ── ITEM EDIT MODAL ──
+function EditModal({ item, section, sections, onSave, onClose }) {
   const isNew = !item?.id && !item?._status;
   const [form, setForm] = useState({
-    section: item?.section || section || 'partager',
+    section: item?.section || section || (sections[0]?.key || ''),
     name: item?.name || '',
     description: item?.description || '',
     price: item?.price ?? '',
     badge: item?.badge || '',
     visible: item?.visible !== false,
   });
-
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
   function handleSave() {
     if (!form.name.trim()) return;
-    onSave({
-      ...(item || {}),
-      ...form,
-      price: form.price === '' ? null : parseFloat(form.price),
-      position: item?.position ?? Date.now(),
-    });
+    onSave({ ...(item || {}), ...form, price: form.price === '' ? null : parseFloat(form.price), position: item?.position ?? Date.now() });
   }
+
+  const inputStyle = { width:'100%', background:'var(--bg3)', border:'1px solid var(--border)', color:'var(--cream)', padding:'10px 14px', fontFamily:'DM Sans, sans-serif', fontSize:13, outline:'none' };
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
@@ -246,15 +254,13 @@ function EditModal({ item, section, onSave, onClose }) {
         <div className="modal-body">
           <div className="field">
             <label>Section</label>
-            <select style={{width:'100%',background:'var(--bg3)',border:'1px solid var(--border)',color:'var(--cream)',padding:'10px 14px',fontFamily:'DM Sans, sans-serif',fontSize:13,outline:'none'}}
-              value={form.section} onChange={e => set('section', e.target.value)}>
-              {SECTIONS.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
+            <select style={inputStyle} value={form.section} onChange={e => set('section', e.target.value)}>
+              {sections.map(s => <option key={s.key} value={s.key}>{s.label}</option>)}
             </select>
           </div>
           <div className="field">
             <label>Name *</label>
-            <input className="field-input" style={{width:'100%',background:'var(--bg3)',border:'1px solid var(--border)',color:'var(--cream)',padding:'10px 14px',fontFamily:'DM Sans, sans-serif',fontSize:13,outline:'none'}}
-              value={form.name} onChange={e => set('name', e.target.value)} placeholder="Item name" />
+            <input className="field-input" value={form.name} onChange={e => set('name', e.target.value)} placeholder="Item name" />
           </div>
           <div className="field">
             <label>Description</label>
@@ -263,13 +269,11 @@ function EditModal({ item, section, onSave, onClose }) {
           <div className="form-row">
             <div className="field">
               <label>Price (€)</label>
-              <input style={{width:'100%',background:'var(--bg3)',border:'1px solid var(--border)',color:'var(--cream)',padding:'10px 14px',fontFamily:'DM Sans, sans-serif',fontSize:13,outline:'none'}}
-                type="number" step="0.01" value={form.price} onChange={e => set('price', e.target.value)} placeholder="0.00" />
+              <input style={inputStyle} type="number" step="0.01" value={form.price} onChange={e => set('price', e.target.value)} placeholder="0.00" />
             </div>
             <div className="field">
               <label>Badge (optional note)</label>
-              <input style={{width:'100%',background:'var(--bg3)',border:'1px solid var(--border)',color:'var(--cream)',padding:'10px 14px',fontFamily:'DM Sans, sans-serif',fontSize:13,outline:'none'}}
-                value={form.badge} onChange={e => set('badge', e.target.value)} placeholder="e.g. Supplément burrata 8€" />
+              <input style={inputStyle} value={form.badge} onChange={e => set('badge', e.target.value)} placeholder="e.g. Supplément burrata 8€" />
             </div>
           </div>
           <div className="toggle-row">
@@ -289,11 +293,104 @@ function EditModal({ item, section, onSave, onClose }) {
   );
 }
 
+// ── SECTION EDIT MODAL ──
+function SectionEditModal({ section, sections, onSave, onClose }) {
+  const isNew = !section?.id;
+  const [form, setForm] = useState({
+    key: section?.key || '',
+    label: section?.label || '',
+    subtitle: section?.subtitle || '',
+    note: section?.note || '',
+    type: section?.type || 'standard',
+    parent_key: section?.parent_key || '',
+    visible: section?.visible !== false,
+  });
+  const [keyManual, setKeyManual] = useState(!isNew);
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  function handleLabelChange(v) {
+    set('label', v);
+    if (!keyManual) set('key', slugify(v));
+  }
+
+  const inputStyle = { width:'100%', background:'var(--bg3)', border:'1px solid var(--border)', color:'var(--cream)', padding:'10px 14px', fontFamily:'DM Sans, sans-serif', fontSize:13, outline:'none' };
+  const parentOptions = sections.filter(s => !s.parent_key && s.key !== form.key);
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <div className="modal-title">{isNew ? 'Add Section' : 'Edit Section'}</div>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div className="modal-body">
+          <div className="field">
+            <label>Section Name *</label>
+            <input className="field-input" value={form.label} onChange={e => handleLabelChange(e.target.value)} placeholder="e.g. Entrées Froides" autoFocus />
+          </div>
+          <div className="field">
+            <label>Internal Key {isNew ? '(auto-generated)' : '(read-only)'}</label>
+            <input className="field-input" value={form.key}
+              onChange={e => { setKeyManual(true); set('key', e.target.value.toLowerCase().replace(/[^a-z0-9_]/g,'')); }}
+              placeholder="e.g. froides"
+              readOnly={!isNew}
+              style={{...inputStyle, opacity: isNew ? 1 : 0.5, cursor: isNew ? 'text' : 'default'}}
+            />
+            <div className="field-hint">Used internally to link menu items to this section. Cannot be changed after creation.</div>
+          </div>
+          <div className="form-row">
+            <div className="field">
+              <label>Subtitle (small label above heading)</label>
+              <input className="field-input" value={form.subtitle} onChange={e => set('subtitle', e.target.value)} placeholder="e.g. Pour commencer" />
+            </div>
+            <div className="field">
+              <label>Type</label>
+              <select style={inputStyle} value={form.type} onChange={e => set('type', e.target.value)}>
+                <option value="standard">Standard</option>
+                <option value="sides">Accompaniments (sides)</option>
+                <option value="kids">Kids menu</option>
+              </select>
+            </div>
+          </div>
+          {form.type === 'sides' && (
+            <div className="field">
+              <label>Parent Section</label>
+              <select style={inputStyle} value={form.parent_key} onChange={e => set('parent_key', e.target.value)}>
+                <option value="">— None —</option>
+                {parentOptions.map(s => <option key={s.key} value={s.key}>{s.label}</option>)}
+              </select>
+              <div className="field-hint">This section will be rendered inside its parent on the menu.</div>
+            </div>
+          )}
+          <div className="field">
+            <label>Note (shown below heading on menu)</label>
+            <textarea className="field-input" value={form.note} onChange={e => set('note', e.target.value)} placeholder="Optional note or description…" />
+          </div>
+          <div className="toggle-row" style={{marginTop:8}}>
+            <label className="toggle">
+              <input type="checkbox" checked={form.visible} onChange={e => set('visible', e.target.checked)} />
+              <span className="toggle-slider"></span>
+            </label>
+            <span className="toggle-label">Visible on menu</span>
+          </div>
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-outline" onClick={onClose}>Cancel</button>
+          <button className="btn btn-gold" onClick={() => form.label.trim() && form.key.trim() && onSave(form)} disabled={!form.label.trim() || !form.key.trim()}>
+            {isNew ? 'Add Section' : 'Save Changes'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── PUBLISH MODAL ──
-function PublishModal({ pending, dbItems, onConfirm, onClose }) {
+function PublishModal({ pending, dbItems, sections, onConfirm, onClose }) {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState('');
 
+  const getSectionLabel = key => sections.find(s => s.key === key)?.label || key;
   const creates = pending.creates;
   const updates = Object.entries(pending.updates).map(([id, fields]) => ({
     id, ...fields, _origName: dbItems.find(i => i.id === id)?.name
@@ -318,10 +415,7 @@ function PublishModal({ pending, dbItems, onConfirm, onClose }) {
         if (error) throw error;
       }
       onConfirm();
-    } catch (e) {
-      setErr(e.message);
-      setLoading(false);
-    }
+    } catch (e) { setErr(e.message); setLoading(false); }
   }
 
   return (
@@ -332,45 +426,41 @@ function PublishModal({ pending, dbItems, onConfirm, onClose }) {
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
         <div className="modal-body">
-          {total === 0 ? (
-            <div className="pub-empty">No pending changes.</div>
-          ) : (
-            <>
-              {creates.length > 0 && (
-                <div className="pub-section">
-                  <div className="pub-section-title creates">+ {creates.length} new item{creates.length > 1 ? 's' : ''}</div>
-                  {creates.map((c, i) => (
-                    <div className="pub-item" key={i}>
-                      <div className="pub-item-name">{c.name} {c.price ? `— ${Number(c.price).toFixed(2)} €` : ''}</div>
-                      <div className="pub-item-section">{sectionLabel(c.section)}</div>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {updates.length > 0 && (
-                <div className="pub-section">
-                  <div className="pub-section-title updates">~ {updates.length} updated item{updates.length > 1 ? 's' : ''}</div>
-                  {updates.map((u, i) => (
-                    <div className="pub-item" key={i}>
-                      <div className="pub-item-name">{u._origName} → {u.name}</div>
-                      <div className="pub-item-section">{sectionLabel(u.section)}</div>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {deletes.length > 0 && (
-                <div className="pub-section">
-                  <div className="pub-section-title deletes">× {deletes.length} deleted item{deletes.length > 1 ? 's' : ''}</div>
-                  {deletes.map((d, i) => (
-                    <div className="pub-item" key={i}>
-                      <div className="pub-item-name">{d.name}</div>
-                      <div className="pub-item-section">{sectionLabel(d.section)}</div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </>
-          )}
+          {total === 0 ? <div className="pub-empty">No pending changes.</div> : (<>
+            {creates.length > 0 && (
+              <div className="pub-section">
+                <div className="pub-section-title creates">+ {creates.length} new item{creates.length > 1 ? 's' : ''}</div>
+                {creates.map((c, i) => (
+                  <div className="pub-item" key={i}>
+                    <div className="pub-item-name">{c.name}{c.price ? ` — ${Number(c.price).toFixed(2)} €` : ''}</div>
+                    <div className="pub-item-section">{getSectionLabel(c.section)}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {updates.length > 0 && (
+              <div className="pub-section">
+                <div className="pub-section-title updates">~ {updates.length} updated item{updates.length > 1 ? 's' : ''}</div>
+                {updates.map((u, i) => (
+                  <div className="pub-item" key={i}>
+                    <div className="pub-item-name">{u._origName} → {u.name}</div>
+                    <div className="pub-item-section">{getSectionLabel(u.section)}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {deletes.length > 0 && (
+              <div className="pub-section">
+                <div className="pub-section-title deletes">× {deletes.length} deleted item{deletes.length > 1 ? 's' : ''}</div>
+                {deletes.map((d, i) => (
+                  <div className="pub-item" key={i}>
+                    <div className="pub-item-name">{d.name}</div>
+                    <div className="pub-item-section">{getSectionLabel(d.section)}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>)}
           {err && <div className="err" style={{marginTop:12}}>{err}</div>}
         </div>
         <div className="modal-footer">
@@ -386,26 +476,168 @@ function PublishModal({ pending, dbItems, onConfirm, onClose }) {
   );
 }
 
+// ── SECTIONS MANAGER ──
+function SectionsManager({ sections, allItems, onRefresh }) {
+  const [editSection, setEditSection] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [err, setErr] = useState('');
+
+  const sorted = [...sections].sort((a, b) => a.position - b.position);
+  const topLevel = sorted.filter(s => !s.parent_key);
+  const children = sorted.filter(s => s.parent_key);
+
+  const orderedDisplay = [];
+  topLevel.forEach(s => {
+    orderedDisplay.push(s);
+    children.filter(c => c.parent_key === s.key).forEach(c => orderedDisplay.push(c));
+  });
+
+  async function toggleVisible(sec) {
+    setSaving(true);
+    const { error } = await sb.from('menu_sections').update({ visible: !sec.visible }).eq('id', sec.id);
+    if (error) setErr(error.message);
+    else onRefresh();
+    setSaving(false);
+  }
+
+  async function moveSection(sec, dir) {
+    const peers = topLevel;
+    const idx = peers.findIndex(s => s.id === sec.id);
+    const swapIdx = dir === 'up' ? idx - 1 : idx + 1;
+    if (swapIdx < 0 || swapIdx >= peers.length) return;
+    const swap = peers[swapIdx];
+    setSaving(true);
+    await Promise.all([
+      sb.from('menu_sections').update({ position: swap.position }).eq('id', sec.id),
+      sb.from('menu_sections').update({ position: sec.position }).eq('id', swap.id),
+    ]);
+    onRefresh();
+    setSaving(false);
+  }
+
+  async function handleSaveSection(form) {
+    setSaving(true); setErr('');
+    const isNew = !editSection?.id;
+    const maxPos = sections.length ? Math.max(...sections.map(s => s.position)) : 0;
+    const payload = {
+      key: form.key,
+      label: form.label,
+      subtitle: form.subtitle || null,
+      note: form.note || null,
+      type: form.type,
+      parent_key: form.type === 'sides' && form.parent_key ? form.parent_key : null,
+      visible: form.visible,
+    };
+    let error;
+    if (isNew) {
+      ({ error } = await sb.from('menu_sections').insert({ ...payload, position: maxPos + 10 }));
+    } else {
+      ({ error } = await sb.from('menu_sections').update(payload).eq('id', editSection.id));
+    }
+    if (error) setErr(error.message);
+    else { setEditSection(null); onRefresh(); }
+    setSaving(false);
+  }
+
+  async function deleteSection(sec) {
+    const itemCount = allItems.filter(i => i.section === sec.key).length;
+    if (itemCount > 0) {
+      alert(`Cannot delete "${sec.label}" — it has ${itemCount} menu item${itemCount > 1 ? 's' : ''}. Move or delete those items first.`);
+      return;
+    }
+    if (!confirm(`Delete section "${sec.label}"? This cannot be undone.`)) return;
+    setSaving(true);
+    const { error } = await sb.from('menu_sections').delete().eq('id', sec.id);
+    if (error) setErr(error.message);
+    else onRefresh();
+    setSaving(false);
+  }
+
+  return (
+    <div>
+      <div className="main-header">
+        <div className="main-title">Manage <em>Sections</em></div>
+        <button className="btn btn-gold btn-sm" onClick={() => setEditSection({})}>+ Add Section</button>
+      </div>
+      {err && <div className="err" style={{marginBottom:16}}>{err}</div>}
+      <div style={{color:'var(--muted)',fontSize:12,marginBottom:16,lineHeight:1.6}}>
+        Changes here (rename, reorder, show/hide) go live immediately — no publish step needed.
+      </div>
+      <div className="sec-list">
+        {orderedDisplay.map((sec, i) => {
+          const isChild = !!sec.parent_key;
+          const peerList = isChild ? children.filter(c => c.parent_key === sec.parent_key) : topLevel;
+          const peerIdx = peerList.findIndex(s => s.id === sec.id);
+          return (
+            <div key={sec.id} className={['sec-row', !sec.visible ? 'hidden' : '', isChild ? 'is-child' : ''].filter(Boolean).join(' ')}>
+              {!isChild ? (
+                <div className="reorder-btns">
+                  <button className="reorder-btn" onClick={() => moveSection(sec, 'up')} disabled={peerIdx === 0 || saving} title="Move up">▲</button>
+                  <button className="reorder-btn" onClick={() => moveSection(sec, 'down')} disabled={peerIdx === peerList.length - 1 || saving} title="Move down">▼</button>
+                </div>
+              ) : (
+                <div style={{width:26}} />
+              )}
+              <div className="sec-info">
+                <div className="sec-label">{sec.label}</div>
+                {sec.subtitle && <div className="sec-sub">{sec.subtitle}</div>}
+                <div className="sec-badges">
+                  {sec.type !== 'standard' && <span className={`sec-badge type-${sec.type}`}>{sec.type}</span>}
+                  {sec.parent_key && <span className="sec-sub" style={{fontSize:10}}>↳ inside {sections.find(s => s.key === sec.parent_key)?.label || sec.parent_key}</span>}
+                  {!sec.visible && <span className="sec-badge hidden-badge">hidden</span>}
+                </div>
+              </div>
+              <div className="sec-actions">
+                <button className={`icon-btn${sec.visible ? ' active' : ''}`} onClick={() => toggleVisible(sec)} title={sec.visible ? 'Hide from menu' : 'Show on menu'}>
+                  {sec.visible ? '👁' : '○'}
+                </button>
+                <button className="icon-btn" onClick={() => setEditSection(sec)} title="Edit">✎</button>
+                <button className="icon-btn del" onClick={() => deleteSection(sec)} title="Delete">✕</button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {editSection !== null && (
+        <SectionEditModal
+          section={editSection?.id ? editSection : null}
+          sections={sections}
+          onSave={handleSaveSection}
+          onClose={() => setEditSection(null)}
+        />
+      )}
+    </div>
+  );
+}
+
 // ── MAIN APP ──
 function AdminApp({ onLogout }) {
-  const [dbItems, setDbItems] = useState([]);
-  const [pending, setPendingState] = useState(loadPending());
-  const [activeSection, setActiveSection] = useState('partager');
-  const [editItem, setEditItem] = useState(null);
+  const [dbItems, setDbItems]       = useState([]);
+  const [sections, setSections]     = useState([]);
+  const [pending, setPendingState]  = useState(loadPending());
+  const [activeSection, setActiveSection] = useState('');
+  const [activeView, setActiveView] = useState('items');
+  const [editItem, setEditItem]     = useState(null);
   const [showPublish, setShowPublish] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [success, setSuccess] = useState(false);
+  const [loading, setLoading]       = useState(true);
+  const [success, setSuccess]       = useState(false);
 
   function setPending(p) { setPendingState(p); savePending(p); }
 
-  async function fetchItems() {
+  async function fetchAll() {
     setLoading(true);
-    const { data } = await sb.from('menu_items').select('*').order('position', { ascending: true });
-    setDbItems(data || []);
+    const [{ data: secs }, { data: items }] = await Promise.all([
+      sb.from('menu_sections').select('*').order('position', { ascending: true }),
+      sb.from('menu_items').select('*').order('position', { ascending: true }),
+    ]);
+    const secList = secs || [];
+    setSections(secList);
+    setDbItems(items || []);
+    if (secList.length && !activeSection) setActiveSection(secList[0].key);
     setLoading(false);
   }
 
-  useEffect(() => { fetchItems(); }, []);
+  useEffect(() => { fetchAll(); }, []);
 
   const allItems = mergeItems(dbItems, pending);
   const sectionItems = allItems.filter(i => i.section === activeSection);
@@ -414,11 +646,9 @@ function AdminApp({ onLogout }) {
   function handleSaveEdit(item) {
     const p = { ...pending };
     if (item._status === 'create' || (!item.id && !item._status)) {
-      // New item
       const tempId = 'temp_' + Date.now();
       p.creates = [...p.creates.filter(c => c.tempId !== item.tempId), { ...item, tempId, _status: 'create' }];
     } else if (item.id) {
-      // Edit existing
       p.updates = { ...p.updates, [item.id]: item };
     }
     setPending(p);
@@ -437,18 +667,15 @@ function AdminApp({ onLogout }) {
   }
 
   function handleUndoDelete(id) {
-    const p = { ...pending, deletes: pending.deletes.filter(d => d !== id) };
-    setPending(p);
+    setPending({ ...pending, deletes: pending.deletes.filter(d => d !== id) });
   }
 
   function handleToggleVisible(item) {
     const newVisible = !item.visible;
     if (item._status === 'create') {
-      const p = { ...pending, creates: pending.creates.map(c => c.tempId === item.tempId ? { ...c, visible: newVisible } : c) };
-      setPending(p);
+      setPending({ ...pending, creates: pending.creates.map(c => c.tempId === item.tempId ? { ...c, visible: newVisible } : c) });
     } else {
-      const p = { ...pending, updates: { ...pending.updates, [item.id]: { ...(pending.updates[item.id] || item), visible: newVisible } } };
-      setPending(p);
+      setPending({ ...pending, updates: { ...pending.updates, [item.id]: { ...(pending.updates[item.id] || item), visible: newVisible } } });
     }
   }
 
@@ -456,7 +683,7 @@ function AdminApp({ onLogout }) {
     setPending({ creates: [], updates: {}, deletes: [] });
     setShowPublish(false);
     setSuccess(true);
-    fetchItems();
+    fetchAll();
     setTimeout(() => setSuccess(false), 4000);
   }
 
@@ -466,121 +693,114 @@ function AdminApp({ onLogout }) {
   }
 
   const sectionCounts = {};
-  SECTIONS.forEach(s => {
-    sectionCounts[s.id] = allItems.filter(i => i.section === s.id).length;
-  });
+  sections.forEach(s => { sectionCounts[s.key] = allItems.filter(i => i.section === s.key).length; });
 
   return (
     <div className="app">
-      {/* TOPBAR */}
       <div className="topbar">
         <div className="topbar-logo">La <em>Petite Suisse</em> — Admin</div>
         <div className="topbar-right">
-          <div
-            className={`pending-badge${count === 0 ? ' none' : ''}`}
-            onClick={() => count > 0 && setShowPublish(true)}
-          >
+          <div className={`pending-badge${count === 0 ? ' none' : ''}`} onClick={() => count > 0 && setShowPublish(true)}>
             {count === 0 ? 'No pending changes' : `${count} pending change${count > 1 ? 's' : ''} — Review & Publish`}
           </div>
           <button className="logout-btn" onClick={handleLogout}>Sign out</button>
         </div>
       </div>
 
-      {/* SIDEBAR */}
       <div className="sidebar">
-        <div className="sidebar-section">Sections</div>
-        {SECTIONS.map(s => (
-          <div
-            key={s.id}
-            className={`sidebar-item${activeSection === s.id ? ' active' : ''}`}
-            onClick={() => setActiveSection(s.id)}
-          >
-            <span className="sidebar-item-label">{s.label}</span>
-            <span className="sidebar-count">{sectionCounts[s.id] || 0}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* MAIN */}
-      <div className="main">
-        {success && <div className="success-bar" style={{marginBottom:20}}>✓ Changes published successfully — menu is now live.</div>}
-        <div className="main-header">
-          <div className="main-title">{sectionLabel(activeSection)}</div>
-          <button className="btn btn-gold btn-sm" onClick={() => setEditItem({ section: activeSection })}>+ Add item</button>
+        <div className="sidebar-view-toggle">
+          <button className={`view-tab${activeView === 'items' ? ' active' : ''}`} onClick={() => setActiveView('items')}>Items</button>
+          <button className={`view-tab${activeView === 'sections' ? ' active' : ''}`} onClick={() => setActiveView('sections')}>Sections</button>
         </div>
-
-        {loading ? (
-          <div style={{color:'var(--muted)',padding:40,textAlign:'center'}}>Loading…</div>
-        ) : sectionItems.length === 0 ? (
-          <div className="empty-state">
-            <p>No items in this section yet.</p>
-            <button className="btn btn-outline" onClick={() => setEditItem({ section: activeSection })}>Add the first item</button>
-          </div>
-        ) : (
-          <div className="item-list">
-            {sectionItems.map((item, idx) => {
-              const isDeleted = item.id && pending.deletes.includes(item.id);
-              const rowClass = [
-                'item-row',
-                item._status === 'create' ? 'pending-create' : '',
-                item._status === 'update' ? 'pending-update' : '',
-                isDeleted ? 'pending-delete' : '',
-                !item.visible ? 'hidden' : '',
-              ].filter(Boolean).join(' ');
-
-              return (
-                <div className={rowClass} key={item.id || item.tempId || idx}>
-                  <div>
-                    <div className="item-name">
-                      {item.name}
-                      {item.badge && <span className="item-badge">{item.badge}</span>}
-                    </div>
-                    {item.description && <div className="item-desc">{item.description}</div>}
-                    <div className="item-meta" style={{marginTop:6}}>
-                      {item.price != null && <span className="item-price">{Number(item.price).toFixed(2)} €</span>}
-                      {item._status === 'create' && <span className="pending-tag create">New</span>}
-                      {item._status === 'update' && <span className="pending-tag update">Edited</span>}
-                      {isDeleted && <span className="pending-tag delete">To delete</span>}
-                      {!item.visible && <span style={{fontSize:10,color:'var(--muted)',letterSpacing:'0.1em'}}>HIDDEN</span>}
-                    </div>
-                  </div>
-                  <div className="item-actions">
-                    {isDeleted ? (
-                      <button className="icon-btn undo" onClick={() => handleUndoDelete(item.id)} title="Undo delete">↩</button>
-                    ) : (
-                      <>
-                        <button
-                          className={`icon-btn${item.visible ? ' active' : ''}`}
-                          onClick={() => handleToggleVisible(item)}
-                          title={item.visible ? 'Hide from menu' : 'Show on menu'}
-                        >{item.visible ? '👁' : '○'}</button>
-                        <button className="icon-btn" onClick={() => setEditItem(item)} title="Edit">✎</button>
-                        <button className="icon-btn del" onClick={() => handleDelete(item)} title="Delete">✕</button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+        {activeView === 'items' && (<>
+          <div className="sidebar-section">Sections</div>
+          {sections.map(s => (
+            <div key={s.key} className={`sidebar-item${activeSection === s.key ? ' active' : ''}`} onClick={() => setActiveSection(s.key)}>
+              <span className="sidebar-item-label">{s.label}</span>
+              <span className="sidebar-count">{sectionCounts[s.key] || 0}</span>
+            </div>
+          ))}
+        </>)}
+        {activeView === 'sections' && (
+          <div style={{padding:'12px 20px',color:'var(--muted)',fontSize:12,lineHeight:1.6}}>
+            Rename, reorder, and show/hide sections in the main panel →
           </div>
         )}
       </div>
 
+      <div className="main">
+        {success && <div className="success-bar" style={{marginBottom:20}}>✓ Changes published — menu is now live.</div>}
+
+        {activeView === 'sections' ? (
+          <SectionsManager sections={sections} allItems={allItems} onRefresh={fetchAll} />
+        ) : loading ? (
+          <div style={{color:'var(--muted)',padding:40,textAlign:'center'}}>Loading…</div>
+        ) : sectionItems.length === 0 ? (
+          <>
+            <div className="main-header">
+              <div className="main-title">{sections.find(s => s.key === activeSection)?.label || activeSection}</div>
+              <button className="btn btn-gold btn-sm" onClick={() => setEditItem({ section: activeSection })}>+ Add item</button>
+            </div>
+            <div className="empty-state">
+              <p>No items in this section yet.</p>
+              <button className="btn btn-outline" onClick={() => setEditItem({ section: activeSection })}>Add the first item</button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="main-header">
+              <div className="main-title">{sections.find(s => s.key === activeSection)?.label || activeSection}</div>
+              <button className="btn btn-gold btn-sm" onClick={() => setEditItem({ section: activeSection })}>+ Add item</button>
+            </div>
+            <div className="item-list">
+              {sectionItems.map((item, idx) => {
+                const isDeleted = item.id && pending.deletes.includes(item.id);
+                const rowClass = ['item-row',
+                  item._status === 'create' ? 'pending-create' : '',
+                  item._status === 'update' ? 'pending-update' : '',
+                  isDeleted ? 'pending-delete' : '',
+                  !item.visible ? 'hidden' : '',
+                ].filter(Boolean).join(' ');
+                return (
+                  <div className={rowClass} key={item.id || item.tempId || idx}>
+                    <div>
+                      <div className="item-name">
+                        {item.name}
+                        {item.badge && <span className="item-badge">{item.badge}</span>}
+                      </div>
+                      {item.description && <div className="item-desc">{item.description}</div>}
+                      <div className="item-meta" style={{marginTop:6}}>
+                        {item.price != null && <span className="item-price">{Number(item.price).toFixed(2)} €</span>}
+                        {item._status === 'create' && <span className="pending-tag create">New</span>}
+                        {item._status === 'update' && <span className="pending-tag update">Edited</span>}
+                        {isDeleted && <span className="pending-tag delete">To delete</span>}
+                        {!item.visible && <span style={{fontSize:10,color:'var(--muted)',letterSpacing:'0.1em'}}>HIDDEN</span>}
+                      </div>
+                    </div>
+                    <div className="item-actions">
+                      {isDeleted ? (
+                        <button className="icon-btn undo" onClick={() => handleUndoDelete(item.id)} title="Undo delete">↩</button>
+                      ) : (<>
+                        <button className={`icon-btn${item.visible ? ' active' : ''}`} onClick={() => handleToggleVisible(item)} title={item.visible ? 'Hide' : 'Show'}>
+                          {item.visible ? '👁' : '○'}
+                        </button>
+                        <button className="icon-btn" onClick={() => setEditItem(item)} title="Edit">✎</button>
+                        <button className="icon-btn del" onClick={() => handleDelete(item)} title="Delete">✕</button>
+                      </>)}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </div>
+
       {editItem !== null && (
-        <EditModal
-          item={editItem}
-          section={activeSection}
-          onSave={handleSaveEdit}
-          onClose={() => setEditItem(null)}
-        />
+        <EditModal item={editItem} section={activeSection} sections={sections} onSave={handleSaveEdit} onClose={() => setEditItem(null)} />
       )}
       {showPublish && (
-        <PublishModal
-          pending={pending}
-          dbItems={dbItems}
-          onConfirm={handlePublishConfirm}
-          onClose={() => setShowPublish(false)}
-        />
+        <PublishModal pending={pending} dbItems={dbItems} sections={sections} onConfirm={handlePublishConfirm} onClose={() => setShowPublish(false)} />
       )}
     </div>
   );
@@ -592,18 +812,13 @@ function Root() {
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    sb.auth.getSession().then(({ data }) => {
-      setUser(data.session?.user || null);
-      setChecking(false);
-    });
-    const { data: { subscription } } = sb.auth.onAuthStateChange((_, session) => {
-      setUser(session?.user || null);
-    });
+    sb.auth.getSession().then(({ data }) => { setUser(data.session?.user || null); setChecking(false); });
+    const { data: { subscription } } = sb.auth.onAuthStateChange((_, session) => { setUser(session?.user || null); });
     return () => subscription.unsubscribe();
   }, []);
 
   if (checking) return <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',color:'var(--muted)'}}>Loading…</div>;
-  if (!user) return <LoginScreen onLogin={() => {}} />;
+  if (!user) return <LoginScreen />;
   return <AdminApp onLogout={() => setUser(null)} />;
 }
 
